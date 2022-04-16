@@ -1,0 +1,54 @@
+
+  :root {
+    --vs-primary: 246, 245, 247;
+    --vs-success: 23, 201, 100;
+    --vs-danger: 235, 37, 90;
+    --vs-warn: 254, 130, 0;
+    --vs-dark: 36, 14, 50;
+  }
+
+ .vs-input {
+  background: #ffffff ;
+  border: none !important;
+  &:focus {
+    background: #ffffff;
+  }
+}
+
+  .vs-select__input {
+  background: #ffffff !important;
+
+  &:focus {
+    background: #ffffff;
+    //box-shadow: none;
+    //border: none;
+  }
+  &:hover {
+    background: #ffffff;
+    box-shadow: none;
+    //border: none;
+    //top:0;
+  }
+  
+}
+.grid-container {
+  columns: 4 200px;
+  column-gap: 1.5rem;
+  margin: 0 auto;
+  div {
+    margin: 0 1.5rem 1.5rem 0;
+    display: inline-block;
+    width: 100%;
+   /*  box-shadow: 5px 5px 5px rgba(0,0,0,0.5); */
+    border-radius: 10px;
+    transition: all .25s ease-in-out;
+    
+    canvas {
+  width:100%;
+  height:100%;
+      border-radius: 10px;
+      transition: all .25s ease-in-out;
+    }
+    
+  }
+}
