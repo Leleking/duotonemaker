@@ -85,7 +85,7 @@ export default Vue.extend({
     },
     async fetchPhotos(): Promise<Photo[]> {
       const photos = await this.$axios.$get(
-        "https://api.unsplash.com/search/photos?client_id=sW2Q_-zDlAXfQ2jn_vVstxRUvwIanRAmdJhSb1klMlI&query=fun"
+        "https://api.unsplash.com/search/photos?client_id=sW2Q_-zDlAXfQ2jn_vVstxRUvwIanRAmdJhSb1klMlI&query=fun&per_page=20"
       );
       this.imgs = photos?.results.map((item: any) => {
         return {
