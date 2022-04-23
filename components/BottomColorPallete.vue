@@ -6,7 +6,11 @@
           <div class="p-5 flex justify-between w-full">
             <div class="flex space-x-2 h-full justify-center items-center">
               <div>
-                <color-pair primary="#E6265A" secondary="#200E32" />
+                <color-pair
+                  primary="#E6265A"
+                  secondary="#200E32"
+                  :active="true"
+                />
               </div>
               <div>
                 <color-pair primary="#F4D0BB" secondary="#148883" />

@@ -1,8 +1,16 @@
 <template>
-  <div class="w-[44px] h-[44px] rounded-full overflow-hidden -rotate-45">
-    <div class="flex flex-col h-full">
-      <div class="w-full h-full" :style="{ background: primary }"></div>
-      <div class="w-full h-full" :style="{ background: secondary }"></div>
+  <div>
+    <div
+      :class="`${
+        active ? 'border-[3px] rounded-full p-[3px] border-danger' : ''
+      }`"
+    >
+      <div class="w-[44px] h-[44px] rounded-full overflow-hidden -rotate-45">
+        <div class="flex flex-col h-full">
+          <div class="w-full h-full" :style="{ background: primary }"></div>
+          <div class="w-full h-full" :style="{ background: secondary }"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -20,6 +28,12 @@ export default {
       type: String,
       default: () => {
         return "";
+      },
+    },
+    active: {
+      type: Boolean,
+      default: () => {
+        return false;
       },
     },
   },
