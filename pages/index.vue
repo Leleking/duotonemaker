@@ -13,31 +13,29 @@
     <div class="grid-container">
       <div v-for="(item, index) in imgs" :key="index">
         <div :class="` grid-item grid-item-${index + 1}`">
-          <div>
-            <svg
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              :viewBox="`0 0 ${item.width} ${item.height}`"
-            >
-              <filter :id="`duotone`">
-                <feColorMatrix
-                  type="matrix"
-                  values="0.67578125 0 0 0 0.28515625 0.73828125 0 0 0 0.0625 0.72265625 0 0 0 0.15625 0 0 0 1 0"
-                  color-interpolation-filters="sRGB"
-                  class="jsx-715889512"
-                ></feColorMatrix>
-              </filter>
-              <image
-                width="100%"
-                height="100%"
-                :filter="`url(#duotone)`"
-                :xlink:href="item.urls.regular"
-                x="0"
-                y="0"
-                preserveAspectRatio="xMidYMid slice"
+          <svg
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            :viewBox="`0 0 ${item.width} ${item.height}`"
+          >
+            <filter :id="`duotone`">
+              <feColorMatrix
+                type="matrix"
+                values="0.67578125 0 0 0 0.28515625 0.73828125 0 0 0 0.0625 0.72265625 0 0 0 0.15625 0 0 0 1 0"
+                color-interpolation-filters="sRGB"
                 class="jsx-715889512"
-              ></image>
-            </svg>
-          </div>
+              ></feColorMatrix>
+            </filter>
+            <image
+              width="100%"
+              height="100%"
+              :filter="`url(#duotone)`"
+              :xlink:href="item.urls.regular"
+              x="0"
+              y="0"
+              preserveAspectRatio="xMidYMid slice"
+              class="jsx-715889512"
+            ></image>
+          </svg>
         </div>
       </div>
     </div>
