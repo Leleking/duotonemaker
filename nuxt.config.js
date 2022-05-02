@@ -15,6 +15,11 @@ export default {
         href: "https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css",
       },
     ],
+    script: [
+      {
+        src: "https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js",
+      },
+    ],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css

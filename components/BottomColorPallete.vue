@@ -1,32 +1,28 @@
 <template>
-  <div class="fixed bottom-7 w-full">
+  <div class="fixed bottom-7 w-full z-10">
     <div class="w-full flex justify-center">
       <div class="">
         <div class="bg-defaultBg w-[569px] rounded-full flex item box-shadow">
           <div class="p-5 flex justify-between w-full">
             <div class="flex space-x-2 h-full justify-center items-center">
-              <div>
+              <div
+                v-for="pair in getDefaultColorPairs"
+                :key="pair.id"
+                @click="setColorPair(pair)"
+              >
                 <color-pair
-                  primary="#E6265A"
-                  secondary="#200E32"
-                  :active="true"
+                  :firstColor="pair.firstColor"
+                  :secondColor="pair.secondColor"
+                  :active="isActivePair(pair)"
                 />
               </div>
-              <div>
-                <color-pair primary="#F4D0BB" secondary="#148883" />
-              </div>
-              <div><color-pair primary="#90E0EF" secondary="#04055E" /></div>
-              <div><color-pair primary="#F38B80" secondary="#490D58" /></div>
-              <div><color-pair primary="#B77BAB" secondary="#04055E" /></div>
-              <div><color-pair primary="#90E0EF" secondary="#211F36" /></div>
-              <div><color-pair primary="#B7C582" secondary="#0F0F0F" /></div>
             </div>
             <div class="flex space-x-2 h-full justify-center items-center">
               <div>
-                <single-color-pair color="#E6265A" />
+                <single-color-pair :color="getFirstColor" />
               </div>
               <div>
-                <single-color-pair color="#200E32" />
+                <single-color-pair :color="getSecondColor" />
               </div>
             </div>
           </div>
@@ -41,6 +37,32 @@ import ColorPair from "./ColorPair.vue";
 export default {
   components: {
     ColorPair,
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    getDefaultColorPairs() {
+      return this.$store.state.color.defaultColorPairs;
+    },
+    getFirstColor() {
+      return this.$store.state.color.firstColor;
+    },
+    getSecondColor() {
+      return this.$store.state.color.secondColor;
+    },
+  },
+  methods: {
+    isActivePair({ firstColor, secondColor }) {
+      return firstColor === this.getFirstColor &&
+        secondColor === this.getSecondColor
+        ? true
+        : false;
+    },
+    setColorPair(pair) {
+      this.$store.dispatch("color/setPrimaryColor", pair.firstColor);
+      this.$store.dispatch("color/setColorPair", pair);
+    },
   },
 };
 </script>

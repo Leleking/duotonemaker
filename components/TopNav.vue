@@ -2,9 +2,19 @@
   <div>
     <div class="py-[30px]">
       <div class="flex justify-between">
-        <div class="flex space-x-1">
-          <color-button color="rgb(36, 14, 50)" />
-          <color-button primary />
+        <div class="flex items-center space-x-1">
+          <div @click="setPrimaryColor(getFirstColor)">
+            <color-button
+              :color="getFirstColor"
+              :primary="getFirstColor === getPrimaryColor"
+            />
+          </div>
+          <div @click="setPrimaryColor(getSecondColor)">
+            <color-button
+              :color="getSecondColor"
+              :primary="getSecondColor === getPrimaryColor"
+            />
+          </div>
         </div>
         <div class="flex">
           <div
@@ -85,6 +95,21 @@ export default {
   computed: {
     getSelectedImgOption() {
       return this.imgOptions.find((item) => item.id === this.selectedImgOption);
+    },
+    getFirstColor() {
+      return this.$store.state.color.firstColor;
+    },
+    getSecondColor() {
+      return this.$store.state.color.secondColor;
+    },
+    getPrimaryColor() {
+      return this.$store.state.color.primary;
+    },
+  },
+  methods: {
+    setPrimaryColor(payload) {
+      console.log(payload);
+      this.$store.dispatch("color/setPrimaryColor", payload);
     },
   },
 };

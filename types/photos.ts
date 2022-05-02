@@ -19,3 +19,4 @@ export declare type duotonePayload = {
     width: number,
     height: number,
 }
+
