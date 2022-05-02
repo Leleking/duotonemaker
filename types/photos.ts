@@ -20,3 +20,7 @@ export declare type duotonePayload = {
     height: number,
 }
 
+export declare type colorType = {
+    primaryColor: string,
+    secondaryColor: string,
+}

@@ -38,11 +38,6 @@ export const state = () => ({
       firstColor: "#f6cde1",
       secondColor: "#562f40",
     },
-    {
-      id: 8,
-      firstColor: "#10c5f8",
-      secondColor: "#6736dd",
-    },
   ],
 });
 

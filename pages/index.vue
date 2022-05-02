@@ -11,32 +11,34 @@
     </div> -->
 
     <div class="grid-container">
-      <div v-for="(item, index) in imgs" :key="index">
-        <div :class="` grid-item grid-item-${index + 1}`">
-          <svg
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            :viewBox="`0 0 ${item.width} ${item.height}`"
-          >
-            <filter :id="`duotone`">
-              <feColorMatrix
-                type="matrix"
-                values="0.67578125 0 0 0 0.28515625 0.73828125 0 0 0 0.0625 0.72265625 0 0 0 0.15625 0 0 0 1 0"
-                color-interpolation-filters="sRGB"
-                class="jsx-715889512"
-              ></feColorMatrix>
-            </filter>
-            <image
-              width="100%"
-              height="100%"
-              :filter="`url(#duotone)`"
-              :xlink:href="item.urls.regular"
-              x="0"
-              y="0"
-              preserveAspectRatio="xMidYMid slice"
+      <div
+        :class="`grid-item grid-item-${index + 1}`"
+        v-for="(item, index) in imgs"
+        :key="index"
+      >
+        <svg
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          :viewBox="`0 0 ${item.width} ${item.height}`"
+        >
+          <filter :id="`duotone`">
+            <feColorMatrix
+              type="matrix"
+              values="0.67578125 0 0 0 0.28515625 0.73828125 0 0 0 0.0625 0.72265625 0 0 0 0.15625 0 0 0 1 0"
+              color-interpolation-filters="sRGB"
               class="jsx-715889512"
-            ></image>
-          </svg>
-        </div>
+            ></feColorMatrix>
+          </filter>
+          <image
+            width="100%"
+            height="100%"
+            :filter="`url(#duotone)`"
+            :xlink:href="item.urls.regular"
+            x="0"
+            y="0"
+            preserveAspectRatio="xMidYMid slice"
+            class="jsx-715889512"
+          ></image>
+        </svg>
       </div>
     </div>
     <!-- <div class="grid-container">
@@ -51,7 +53,9 @@
 </template>
 
 <script lang="ts">
-import { duotonePayload, Photo } from "../types/photos";
+/* tslint:disable */
+
+import { duotonePayload, Photo, colorType } from "../types/photos";
 import Vue from "vue";
 export default Vue.extend({
   data() {
@@ -129,15 +133,15 @@ export default Vue.extend({
 
       return this.imgs;
     },
-    getPrimaryAndSecondaryColors(): object {
+    getPrimaryAndSecondaryColors(): colorType {
       let colors = [this.firstColor, this.secondColor];
       colors = colors.filter((color) => color !== this.getPrimaryColor);
       console.log(this.getPrimaryColor, colors);
       return { primaryColor: this.getPrimaryColor, secondaryColor: colors[0] };
     },
-    getMatrixValues(color1, color2) {
-      var matrix = document.querySelector("feColorMatrix");
-      var value = [];
+    getMatrixValues(color1: any, color2: any) {
+      var matrix: any = document.querySelector("feColorMatrix");
+      var value: any = [];
       value = value.concat([
         color1[0] / 256 - color2[0] / 256,
         0,
@@ -163,7 +167,7 @@ export default Vue.extend({
       matrix.setAttribute("values", value.join(" "));
     },
     convertToDuotone() {
-      const { primaryColor, secondaryColor } =
+      const { primaryColor, secondaryColor }: colorType =
         this.getPrimaryAndSecondaryColors();
       this.getMatrixValues(
         this.hexToRgb(primaryColor),
@@ -189,15 +193,6 @@ export default Vue.extend({
         });
       }
     }, */
-    applyDuotone() {
-      const { primaryColor, secondaryColor } =
-        this.getPrimaryAndSecondaryColors();
-      var styleElem = document.head.appendChild(
-        document.createElement("style")
-      );
-
-      //styleElem.innerHTML = `#duotone:before {background-color: ${secondaryColor} !important;} #duotone:after {background-color: ${primaryColor}  !important;}`;
-    },
 
     hexToRgb(hex: string) {
       const normal = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
