@@ -82,6 +82,8 @@ export default {
       return id === this.getSelectedPairId ? true : false;
     },
     setColorPair(pair) {
+      this.firstColor = pair.firstColor;
+      this.secondColor = pair.secondColor;
       this.$store.dispatch("color/setPrimaryColor", pair.firstColor);
       this.$store.dispatch("color/setColorPair", pair);
     },
