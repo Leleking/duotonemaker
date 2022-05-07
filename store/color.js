@@ -1,6 +1,9 @@
 export const state = () => ({
-  firstColor: "#E6265A",
-  secondColor: "#200E32",
+  selectedColorPair: {
+    id: 1,
+    firstColor: "#E6265A",
+    secondColor: "#200E32",
+  },
   primary: "#E6265A",
   defaultColorPairs: [
     {
@@ -46,8 +49,15 @@ export const mutations = {
     state.primary = newValue;
   },
   SET_COLOR_PAIR(state, newValue) {
-    state.firstColor = newValue.firstColor;
-    state.secondColor = newValue.secondColor;
+    state.selectedColorPair = newValue;
+  },
+  SET_COLOR_PAIR_BY_ID(state, newValue) {
+    state.primary = newValue.firstColor;
+    const colorIndex = state.defaultColorPairs.findIndex(
+      (item) => item.id === newValue.id
+    );
+    state.selectedColorPair = newValue;
+    state.defaultColorPairs[colorIndex] = newValue;
   },
 };
 
@@ -57,5 +67,8 @@ export const actions = {
   },
   setColorPair: ({ commit }, payload) => {
     commit("SET_COLOR_PAIR", payload);
+  },
+  setColorPairById: ({ commit }, payload) => {
+    commit("SET_COLOR_PAIR_BY_ID", payload);
   },
 };

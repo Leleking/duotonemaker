@@ -97,10 +97,10 @@ export default {
       return this.imgOptions.find((item) => item.id === this.selectedImgOption);
     },
     getFirstColor() {
-      return this.$store.state.color.firstColor;
+      return this.$store.state.color.selectedColorPair.firstColor;
     },
     getSecondColor() {
-      return this.$store.state.color.secondColor;
+      return this.$store.state.color.selectedColorPair.secondColor;
     },
     getPrimaryColor() {
       return this.$store.state.color.primary;

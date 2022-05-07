@@ -18,11 +18,29 @@
               </div>
             </div>
             <div class="flex space-x-2 h-full justify-center items-center">
-              <div>
+              <div @click="openColor(1)">
                 <single-color-pair :color="getFirstColor" />
+                <input
+                  type="color"
+                  name=""
+                  id=""
+                  class="hidden"
+                  ref="colorPicker1"
+                  v-model="firstColor"
+                  @input="(e) => changeColor(e, 1)"
+                />
               </div>
-              <div>
+              <div @click="openColor(2)">
                 <single-color-pair :color="getSecondColor" />
+                <input
+                  type="color"
+                  name=""
+                  id=""
+                  class="hidden"
+                  ref="colorPicker2"
+                  v-model="secondColor"
+                  @input="(e) => changeColor(e, 2)"
+                />
               </div>
             </div>
           </div>
@@ -39,29 +57,49 @@ export default {
     ColorPair,
   },
   data() {
-    return {};
+    return {
+      firstColor: "",
+      secondColor: "",
+      selectedColorPair: {},
+    };
   },
   computed: {
     getDefaultColorPairs() {
       return this.$store.state.color.defaultColorPairs;
     },
+    getSelectedPairId() {
+      return this.$store.state.color.selectedColorPair.id;
+    },
     getFirstColor() {
-      return this.$store.state.color.firstColor;
+      return this.$store.state.color.selectedColorPair.firstColor;
     },
     getSecondColor() {
-      return this.$store.state.color.secondColor;
+      return this.$store.state.color.selectedColorPair.secondColor;
     },
   },
   methods: {
-    isActivePair({ firstColor, secondColor }) {
-      return firstColor === this.getFirstColor &&
-        secondColor === this.getSecondColor
-        ? true
-        : false;
+    isActivePair({ id }) {
+      return id === this.getSelectedPairId ? true : false;
     },
     setColorPair(pair) {
       this.$store.dispatch("color/setPrimaryColor", pair.firstColor);
       this.$store.dispatch("color/setColorPair", pair);
+    },
+    openColor(val) {
+      if (val === 1) {
+        this.$refs.colorPicker1.click();
+      }
+      if (val === 2) {
+        this.$refs.colorPicker2.click();
+      }
+      //alert("change color");
+    },
+    changeColor(e, type) {
+      this.$store.dispatch("color/setColorPairById", {
+        id: this.getSelectedPairId,
+        firstColor: type === 1 ? this.firstColor : this.getFirstColor,
+        secondColor: type === 2 ? this.secondColor : this.getSecondColor,
+      });
     },
   },
 };

@@ -225,10 +225,10 @@ export default Vue.extend({
   },
   computed: {
     firstColor() {
-      return this.$store.state.color.firstColor;
+      return this.$store.state.color.selectedColorPair.firstColor;
     },
     secondColor() {
-      return this.$store.state.color.secondColor;
+      return this.$store.state.color.selectedColorPair.secondColor;
     },
     getPrimaryColor() {
       return this.$store.state.color.primary;
@@ -240,6 +240,8 @@ export default Vue.extend({
       this.convertToDuotone();
     },
     secondColor() {
+      console.log("second color converting");
+
       this.convertToDuotone();
     },
     getPrimaryColor() {
