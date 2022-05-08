@@ -12,9 +12,9 @@
 
     <div class="grid-container">
       <div
-        :class="`grid-item grid-item-${index + 1}`"
         v-for="(item, index) in imgs"
         :key="index"
+        :class="`grid-item grid-item-${index + 1}`"
       >
         <svg
           xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -26,7 +26,7 @@
               values="0.67578125 0 0 0 0.28515625 0.73828125 0 0 0 0.0625 0.72265625 0 0 0 0.15625 0 0 0 1 0"
               color-interpolation-filters="sRGB"
               class="jsx-715889512"
-            ></feColorMatrix>
+            />
           </filter>
           <image
             width="100%"
@@ -37,7 +37,7 @@
             y="0"
             preserveAspectRatio="xMidYMid slice"
             class="jsx-715889512"
-          ></image>
+          />
         </svg>
       </div>
     </div>
@@ -55,124 +55,174 @@
 <script lang="ts">
 /* tslint:disable */
 
-import { duotonePayload, Photo, colorType } from "../types/photos";
-import Vue from "vue";
+import Vue from 'vue'
+import { duotonePayload, Photo, colorType } from '../types/photos'
 export default Vue.extend({
-  data() {
+  name: 'IndexPage',
+  layout: 'MainLayout',
+  data () {
     return {
-      imgs: [],
-    };
+      imgs: []
+    }
   },
-  layout: "MainLayout",
-  name: "IndexPage",
+  computed: {
+    firstColor () {
+      return this.$store.state.color.selectedColorPair.firstColor
+    },
+    secondColor () {
+      return this.$store.state.color.selectedColorPair.secondColor
+    },
+    getPrimaryColor () {
+      return this.$store.state.color.primary
+    }
+  },
+  watch: {
+    firstColor () {
+      this.convertToDuotone()
+    },
+    secondColor () {
+      console.log('second color converting')
+
+      this.convertToDuotone()
+    },
+    getPrimaryColor () {
+      this.convertToDuotone()
+    },
+
+    imgs () {
+      /* if (this.imgs.length) {
+        this.imgs.map((item: Photo, key) => {
+          console.log(item);
+
+          var img = item.urls?.regular;
+          this.Duotone({
+            id: `duotone${key + 1}`,
+            src: img,
+            primaryColor: "#f65e35",
+            secondaryColor: "#1e3265",
+            width: item.width,
+            height: item.height,
+          });
+        });
+      } */
+    }
+  },
+  created () {},
+
+  mounted () {
+    this.fetchPhotos()
+  },
+  updated () {
+    this.convertToDuotone()
+  },
   methods: {
-    Duotone({
+    Duotone ({
       id,
       src,
       primaryColor,
       secondaryColor,
       width,
-      height,
+      height
     }: duotonePayload) {
       // console.log("id", document.getElementById(id));
-      let canvas: any = document.getElementById(id);
+      const canvas: any = document.getElementById(id)
 
-      let ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext('2d')
 
-      let downloadedImg: any = new Image();
+      const downloadedImg: any = new Image()
 
-      downloadedImg.crossOrigin = ""; // to allow us to manipulate the image without tainting canvas
+      downloadedImg.crossOrigin = '' // to allow us to manipulate the image without tainting canvas
       // console.log("canvas", width);
       // console.log("canvas -height", height);
       downloadedImg.onload = function () {
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(downloadedImg, 0, 0, canvas.width, canvas.height); // draws image to canvas on load
+        canvas.width = width
+        canvas.height = height
+        ctx.drawImage(downloadedImg, 0, 0, canvas.width, canvas.height) // draws image to canvas on load
         // Converts to grayscale by averaging the values of each pixel
-        let imageData = ctx.getImageData(0, 0, 800, 800);
-        const pixels = imageData.data;
+        const imageData = ctx.getImageData(0, 0, 800, 800)
+        const pixels = imageData.data
         for (let i = 0; i < pixels.length; i += 4) {
-          const red = pixels[i];
-          const green = pixels[i + 1];
-          const blue = pixels[i + 2];
+          const red = pixels[i]
+          const green = pixels[i + 1]
+          const blue = pixels[i + 2]
           // Using relative luminance to convert to grayscale
           const avg = Math.round(
             (0.299 * red + 0.587 * green + 0.114 * blue) * 1
-          );
-          pixels[i] = avg;
-          pixels[i + 1] = avg;
-          pixels[i + 2] = avg;
+          )
+          pixels[i] = avg
+          pixels[i + 1] = avg
+          pixels[i + 2] = avg
         }
         // Puts the grayscaled image data back into the canvas
-        ctx.putImageData(imageData, 0, 0);
+        ctx.putImageData(imageData, 0, 0)
         // puts the duotone image into canvas with multiply and lighten
-        ctx.globalCompositeOperation = "multiply";
-        ctx.fillStyle = primaryColor; // colour for highlights
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'multiply'
+        ctx.fillStyle = primaryColor // colour for highlights
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
         // lighten
-        ctx.globalCompositeOperation = "lighten";
-        ctx.fillStyle = secondaryColor; // colour for shadows
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'lighten'
+        ctx.fillStyle = secondaryColor // colour for shadows
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
         // calls any other draws that you want through the function parameter passed in
         // actions(ctx);
-      };
-      downloadedImg.src = src; // source for the image
+      }
+      downloadedImg.src = src // source for the image
     },
-    async fetchPhotos(): Promise<Photo[]> {
+    async fetchPhotos (): Promise<Photo[]> {
       const photos = await this.$axios.$get(
-        "https://api.unsplash.com/search/photos?client_id=sW2Q_-zDlAXfQ2jn_vVstxRUvwIanRAmdJhSb1klMlI&query=fun&per_page=20"
-      );
+        'https://api.unsplash.com/search/photos?client_id=sW2Q_-zDlAXfQ2jn_vVstxRUvwIanRAmdJhSb1klMlI&query=fun&per_page=20'
+      )
       this.imgs = photos?.results.map((item: any) => {
         return {
           id: item.id,
           width: item.width,
           height: item.height,
-          urls: item.urls,
-        };
-      });
+          urls: item.urls
+        }
+      })
 
-      return this.imgs;
+      return this.imgs
     },
-    getPrimaryAndSecondaryColors(): colorType {
-      let colors = [this.firstColor, this.secondColor];
-      colors = colors.filter((color) => color !== this.getPrimaryColor);
-      console.log(this.getPrimaryColor, colors);
-      return { primaryColor: this.getPrimaryColor, secondaryColor: colors[0] };
+    getPrimaryAndSecondaryColors (): colorType {
+      let colors = [this.firstColor, this.secondColor]
+      colors = colors.filter(color => color !== this.getPrimaryColor)
+      console.log(this.getPrimaryColor, colors)
+      return { primaryColor: this.getPrimaryColor, secondaryColor: colors[0] }
     },
-    getMatrixValues(color1: any, color2: any) {
-      var matrix: any = document.querySelector("feColorMatrix");
-      var value: any = [];
+    getMatrixValues (color1: any, color2: any) {
+      const matrix: any = document.querySelector('feColorMatrix')
+      let value: any = []
       value = value.concat([
         color1[0] / 256 - color2[0] / 256,
         0,
         0,
         0,
-        color2[0] / 256,
-      ]);
+        color2[0] / 256
+      ])
       value = value.concat([
         color1[1] / 256 - color2[1] / 256,
         0,
         0,
         0,
-        color2[1] / 256,
-      ]);
+        color2[1] / 256
+      ])
       value = value.concat([
         color1[2] / 256 - color2[2] / 256,
         0,
         0,
         0,
-        color2[2] / 256,
-      ]);
-      value = value.concat([0, 0, 0, 1, 0]);
-      matrix.setAttribute("values", value.join(" "));
+        color2[2] / 256
+      ])
+      value = value.concat([0, 0, 0, 1, 0])
+      matrix.setAttribute('values', value.join(' '))
     },
-    convertToDuotone() {
+    convertToDuotone () {
       const { primaryColor, secondaryColor }: colorType =
-        this.getPrimaryAndSecondaryColors();
+        this.getPrimaryAndSecondaryColors()
       this.getMatrixValues(
         this.hexToRgb(primaryColor),
         this.hexToRgb(secondaryColor)
-      );
+      )
     },
     /* applyDuotone() {
       const { primaryColor, secondaryColor } =
@@ -194,16 +244,15 @@ export default Vue.extend({
       }
     }, */
 
-    hexToRgb(hex: string) {
-      const normal = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-      if (normal) return normal.slice(1).map((e) => parseInt(e, 16));
+    hexToRgb (hex: string) {
+      const normal = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i)
+      if (normal) { return normal.slice(1).map(e => parseInt(e, 16)) }
 
-      const shorthand = hex.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
-      if (shorthand)
-        return shorthand.slice(1).map((e) => 0x11 * parseInt(e, 16));
+      const shorthand = hex.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i)
+      if (shorthand) { return shorthand.slice(1).map(e => 0x11 * parseInt(e, 16)) }
 
-      return null;
-    },
+      return null
+    }
 
     /* updateDuotoneColor() {
       const { primaryColor, secondaryColor } =
@@ -222,58 +271,8 @@ export default Vue.extend({
       }
 
     } */
-  },
-  computed: {
-    firstColor() {
-      return this.$store.state.color.selectedColorPair.firstColor;
-    },
-    secondColor() {
-      return this.$store.state.color.selectedColorPair.secondColor;
-    },
-    getPrimaryColor() {
-      return this.$store.state.color.primary;
-    },
-  },
-  created() {},
-  watch: {
-    firstColor() {
-      this.convertToDuotone();
-    },
-    secondColor() {
-      console.log("second color converting");
-
-      this.convertToDuotone();
-    },
-    getPrimaryColor() {
-      this.convertToDuotone();
-    },
-
-    imgs() {
-      /* if (this.imgs.length) {
-        this.imgs.map((item: Photo, key) => {
-          console.log(item);
-
-          var img = item.urls?.regular;
-          this.Duotone({
-            id: `duotone${key + 1}`,
-            src: img,
-            primaryColor: "#f65e35",
-            secondaryColor: "#1e3265",
-            width: item.width,
-            height: item.height,
-          });
-        });
-      } */
-    },
-  },
-
-  mounted() {
-    this.fetchPhotos();
-  },
-  updated() {
-    this.convertToDuotone();
-  },
-});
+  }
+})
 </script>
 <style scoped>
 .duotone {
