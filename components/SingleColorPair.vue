@@ -1,6 +1,6 @@
 <template>
   <div class="w-[44px] h-[44px] rounded-full overflow-hidden -rotate-45">
-    <div class="w-full h-full" :style="{ background: color }"></div>
+    <div class="w-full h-full" :style="{ background: color }" />
   </div>
 </template>
 
@@ -10,11 +10,11 @@ export default {
     color: {
       type: String,
       default: () => {
-        return "";
-      },
-    },
-  },
-};
+        return ''
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>

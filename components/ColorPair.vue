@@ -7,8 +7,8 @@
     >
       <div class="w-[44px] h-[44px] rounded-full overflow-hidden -rotate-45">
         <div class="flex flex-col h-full">
-          <div class="w-full h-full" :style="{ background: firstColor }"></div>
-          <div class="w-full h-full" :style="{ background: secondColor }"></div>
+          <div class="w-full h-full" :style="{ background: firstColor }" />
+          <div class="w-full h-full" :style="{ background: secondColor }" />
         </div>
       </div>
     </div>
@@ -21,23 +21,23 @@ export default {
     firstColor: {
       type: String,
       default: () => {
-        return "";
-      },
+        return ''
+      }
     },
     secondColor: {
       type: String,
       default: () => {
-        return "";
-      },
+        return ''
+      }
     },
     active: {
       type: Boolean,
       default: () => {
-        return false;
-      },
-    },
-  },
-};
+        return false
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>

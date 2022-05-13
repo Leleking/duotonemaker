@@ -81,8 +81,6 @@ export default Vue.extend({
       this.convertToDuotone()
     },
     secondColor () {
-      console.log('second color converting')
-
       this.convertToDuotone()
     },
     getPrimaryColor () {

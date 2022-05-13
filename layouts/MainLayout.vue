@@ -13,10 +13,10 @@
 </template>
 
 <script>
-import BottomColorPallete from "~/components/BottomColorPallete.vue";
+import BottomColorPallete from '~/components/BottomColorPallete.vue'
 export default {
-  components: { BottomColorPallete },
-};
+  components: { BottomColorPallete }
+}
 </script>
 
 <style lan TopNavg="scss" scoped></style>
