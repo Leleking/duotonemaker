@@ -15,6 +15,7 @@
         v-for="(item, index) in imgs"
         :key="index"
         :class="`grid-item grid-item-${index + 1}`"
+        @click="preview(item)"
       >
         <svg
           xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -48,6 +49,7 @@
         </div>
       </div>
     </div> -->
+    <img-preview />
     <canvas id="hi" />
   </div>
 </template>
@@ -56,7 +58,7 @@
 /* tslint:disable */
 
 import Vue from 'vue'
-import { duotonePayload, Photo, colorType } from '../types/photos'
+import { DuotonePayload, Photo, ColorType } from '../types/photos'
 export default Vue.extend({
   name: 'IndexPage',
   layout: 'MainLayout',
@@ -114,6 +116,11 @@ export default Vue.extend({
     this.convertToDuotone()
   },
   methods: {
+    preview (img: Photo) {
+      this.$store.commit('preview/toggle', true)
+      this.$store.commit('preview/setImg', img)
+    },
+
     Duotone ({
       id,
       src,
@@ -121,7 +128,7 @@ export default Vue.extend({
       secondaryColor,
       width,
       height
-    }: duotonePayload) {
+    }: DuotonePayload) {
       // console.log("id", document.getElementById(id));
       const canvas: any = document.getElementById(id)
 
@@ -181,10 +188,9 @@ export default Vue.extend({
 
       return this.imgs
     },
-    getPrimaryAndSecondaryColors (): colorType {
+    getPrimaryAndSecondaryColors (): ColorType {
       let colors = [this.firstColor, this.secondColor]
       colors = colors.filter(color => color !== this.getPrimaryColor)
-      console.log(this.getPrimaryColor, colors)
       return { primaryColor: this.getPrimaryColor, secondaryColor: colors[0] }
     },
     getMatrixValues (color1: any, color2: any) {
@@ -215,7 +221,7 @@ export default Vue.extend({
       matrix.setAttribute('values', value.join(' '))
     },
     convertToDuotone () {
-      const { primaryColor, secondaryColor }: colorType =
+      const { primaryColor, secondaryColor }: ColorType =
         this.getPrimaryAndSecondaryColors()
       this.getMatrixValues(
         this.hexToRgb(primaryColor),

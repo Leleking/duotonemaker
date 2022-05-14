@@ -1,17 +1,17 @@
-export declare type photoUrls = {
+export declare type PhotoUrls = {
     raw: string,
     regular: string,
-    
+
 }
 export declare type Photo = {
     id: string,
     name: string,
-    urls: photoUrls ,
+    urls: PhotoUrls,
     width: number,
     height: number,
 }
 
-export declare type duotonePayload = {
+export declare type DuotonePayload = {
     id: string,
     src: string,
     primaryColor: string,
@@ -20,7 +20,7 @@ export declare type duotonePayload = {
     height: number,
 }
 
-export declare type colorType = {
+export declare type ColorType = {
     primaryColor: string,
     secondaryColor: string,
 }
