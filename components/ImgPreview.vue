@@ -5,11 +5,11 @@
     not-close
     not-padding
     @close="handleClose"
+    width="auto"
   >
     <div class="rounded-[inherit]">
       <div
-        class="h-16 bg-primary px-4 flex items-center rounded-[inherit]"
-        w="full"
+        class="h-16 bg-primary px-4 flex items-center rounded-[inherit] w-full"
       >
         <span> Photos by Elikem on Unsplash </span>
       </div>
@@ -17,7 +17,7 @@
         <svg
           xmlns:xlink="http://www.w3.org/1999/xlink"
           :viewBox="`0 0 ${img.width} ${img.height}`"
-          class="block relative rounded-b-[inherit] max-h-[600px]"
+          class="block relative rounded-b-[inherit] max-h-[32rem]"
           width="100%"
           :height="`${img.height}`"
         >
@@ -67,3 +67,12 @@ export default {
   },
 };
 </script>
+<style lang="scss">
+.vs-dialog-content {
+  z-index: 9 !important;
+}
+.vs-dialog {
+  min-width: 100px !important;
+  margin: 0px !important;
+}
+</style>
