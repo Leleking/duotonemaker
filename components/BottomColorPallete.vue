@@ -3,7 +3,7 @@
     <div class="w-full flex justify-center">
       <div class="">
         <div class="bg-defaultBg w-[569px] rounded-full flex item box-shadow">
-          <div class="p-5 flex justify-between w-full">
+          <div class="py-3 px-5 flex justify-between w-full">
             <div class="flex space-x-2 h-full justify-center items-center">
               <div
                 v-for="pair in getDefaultColorPairs"
@@ -28,7 +28,7 @@
                   name=""
                   class="hidden"
                   @input="(e) => changeColor(e, 1)"
-                >
+                />
               </div>
               <div @click="openColor(2)">
                 <single-color-pair :color="getSecondColor" />
@@ -40,7 +40,7 @@
                   name=""
                   class="hidden"
                   @input="(e) => changeColor(e, 2)"
-                >
+                />
               </div>
             </div>
           </div>
@@ -51,60 +51,60 @@
 </template>
 
 <script>
-import ColorPair from './ColorPair.vue'
+import ColorPair from "./ColorPair.vue";
 export default {
   components: {
-    ColorPair
+    ColorPair,
   },
-  data () {
+  data() {
     return {
-      firstColor: '',
-      secondColor: '',
-      selectedColorPair: {}
-    }
+      firstColor: "",
+      secondColor: "",
+      selectedColorPair: {},
+    };
   },
   computed: {
-    getDefaultColorPairs () {
-      return this.$store.state.color.defaultColorPairs
+    getDefaultColorPairs() {
+      return this.$store.state.color.defaultColorPairs;
     },
-    getSelectedPairId () {
-      return this.$store.state.color.selectedColorPair.id
+    getSelectedPairId() {
+      return this.$store.state.color.selectedColorPair.id;
     },
-    getFirstColor () {
-      return this.$store.state.color.selectedColorPair.firstColor
+    getFirstColor() {
+      return this.$store.state.color.selectedColorPair.firstColor;
     },
-    getSecondColor () {
-      return this.$store.state.color.selectedColorPair.secondColor
-    }
+    getSecondColor() {
+      return this.$store.state.color.selectedColorPair.secondColor;
+    },
   },
   methods: {
-    isActivePair ({ id }) {
-      return id === this.getSelectedPairId
+    isActivePair({ id }) {
+      return id === this.getSelectedPairId;
     },
-    setColorPair (pair) {
-      this.firstColor = pair.firstColor
-      this.secondColor = pair.secondColor
-      this.$store.dispatch('color/setPrimaryColor', pair.firstColor)
-      this.$store.dispatch('color/setColorPair', pair)
+    setColorPair(pair) {
+      this.firstColor = pair.firstColor;
+      this.secondColor = pair.secondColor;
+      this.$store.dispatch("color/setPrimaryColor", pair.firstColor);
+      this.$store.dispatch("color/setColorPair", pair);
     },
-    openColor (val) {
+    openColor(val) {
       if (val === 1) {
-        this.$refs.colorPicker1.click()
+        this.$refs.colorPicker1.click();
       }
       if (val === 2) {
-        this.$refs.colorPicker2.click()
+        this.$refs.colorPicker2.click();
       }
       // alert("change color");
     },
-    changeColor (_, type) {
-      this.$store.dispatch('color/setColorPairById', {
+    changeColor(_, type) {
+      this.$store.dispatch("color/setColorPairById", {
         id: this.getSelectedPairId,
         firstColor: type === 1 ? this.firstColor : this.getFirstColor,
-        secondColor: type === 2 ? this.secondColor : this.getSecondColor
-      })
-    }
-  }
-}
+        secondColor: type === 2 ? this.secondColor : this.getSecondColor,
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
