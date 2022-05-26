@@ -7,7 +7,7 @@
     @close="handleClose"
     width="auto"
   >
-    <div class="rounded-[inherit]">
+    <div class="rounded-[inherit] relative">
       <div
         class="h-16 bg-primary px-4 flex items-center rounded-[inherit] w-full"
       >
@@ -17,7 +17,7 @@
         <svg
           xmlns:xlink="http://www.w3.org/1999/xlink"
           :viewBox="`0 0 ${img.width} ${img.height}`"
-          class="block relative rounded-b-[inherit] max-h-[32rem]"
+          class="block relative rounded-b-[inherit] max-h-[28rem]"
           width="100%"
           :height="`${img.height}`"
         >
@@ -40,6 +40,11 @@
             class="jsx-715889512"
           />
         </svg>
+      </div>
+      <div class="absolute bottom-5 right-5">
+        <vs-button circle icon floating>
+          <img src="../assets/images/download.svg" />
+        </vs-button>
       </div>
     </div>
   </vs-dialog>
