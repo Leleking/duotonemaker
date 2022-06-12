@@ -4,22 +4,22 @@
     class="rounded-[inherit]"
     not-close
     not-padding
-    @close="handleClose"
     width="auto"
+    @close="handleClose"
   >
     <div class="rounded-[inherit]">
       <div
-        class="h-16 bg-primary px-4 flex items-center rounded-[inherit] w-full"
+        class="h-16 bg-primary px-4 flex items-center rounded-t-[inherit] w-full"
       >
         <span> Photos by Elikem on Unsplash </span>
       </div>
-      <div class="rounded-[inherit]">
+      <div :class="`rounded-[inherit] h-[30rem]`">
         <svg
           xmlns:xlink="http://www.w3.org/1999/xlink"
           :viewBox="`0 0 ${img.width} ${img.height}`"
           class="block relative rounded-b-[inherit] max-h-[32rem]"
           width="100%"
-          :height="`${img.height}`"
+          height="100%"
         >
           <filter :id="`duotone`">
             <feColorMatrix
@@ -48,24 +48,24 @@
 <script>
 export default {
   computed: {
-    show() {
-      return this.$store.state.preview.show;
+    show () {
+      return this.$store.state.preview.show
     },
 
-    img() {
-      return this.$store.state.preview.img;
-    },
+    img () {
+      return this.$store.state.preview.img
+    }
+  },
+  created () {
+    console.log(this.img)
   },
 
   methods: {
-    handleClose() {
-      this.$store.commit("preview/toggle", false);
-    },
-  },
-  created() {
-    console.log(this.img);
-  },
-};
+    handleClose () {
+      this.$store.commit('preview/toggle', false)
+    }
+  }
+}
 </script>
 <style lang="scss">
 .vs-dialog-content {
