@@ -4,7 +4,6 @@
     class="rounded-[inherit]"
     not-close
     not-padding
-    @close="handleClose"
     width="auto"
   >
     <div class="rounded-[inherit] relative">
@@ -15,6 +14,7 @@
       </div>
       <div class="rounded-[inherit]">
         <svg
+          id="preview_svg"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           :viewBox="`0 0 ${img.width} ${img.height}`"
           class="block relative rounded-b-[inherit] max-h-[28rem]"
@@ -42,8 +42,8 @@
         </svg>
       </div>
       <div class="absolute bottom-5 right-5">
-        <vs-button circle icon floating>
-          <img src="../assets/images/download.svg" />
+        <vs-button circle icon floating @click="downloadImg">
+          <img src="../assets/images/download.svg">
         </vs-button>
       </div>
     </div>
@@ -51,26 +51,51 @@
 </template>
 
 <script>
+import duotone from '../utils/duotone'
+
 export default {
   computed: {
-    show() {
-      return this.$store.state.preview.show;
+
+    show: {
+      get () {
+        return this.$store.state.preview.show
+      },
+
+      set (value) {
+        this.$store.commit('preview/toggle', value)
+      }
     },
 
-    img() {
-      return this.$store.state.preview.img;
+    img () {
+      return this.$store.state.preview.img
     },
+
+    primaryColor () {
+      return this.$store.state.color.selectedColorPair.firstColor
+    },
+
+    secondaryColor () {
+      return this.$store.state.color.selectedColorPair.secondColor
+    }
   },
 
   methods: {
-    handleClose() {
-      this.$store.commit("preview/toggle", false);
-    },
-  },
-  created() {
-    console.log(this.img);
-  },
-};
+
+    async downloadImg () {
+      const img = document.querySelector('#preview_svg image')
+      const imgDataURL = await duotone({
+        id: 'canvas',
+        src: img.getAttribute('xlink:href'),
+        primaryColor: this.primaryColor,
+        secondaryColor: this.secondaryColor
+      })
+      const anchor = document.createElement('a')
+      anchor.download = 'doutone_final.png'
+      anchor.href = imgDataURL
+      anchor.click()
+    }
+  }
+}
 </script>
 <style lang="scss">
 .vs-dialog-content {

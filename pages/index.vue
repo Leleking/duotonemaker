@@ -50,7 +50,7 @@
       </div>
     </div> -->
     <img-preview />
-    <canvas id="hi" />
+    <canvas id="canvas" />
   </div>
 </template>
 
