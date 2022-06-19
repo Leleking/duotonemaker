@@ -5,7 +5,6 @@
     not-close
     not-padding
     width="auto"
-    @close="handleClose"
   >
     <div class="rounded-[inherit] relative">
       <div
