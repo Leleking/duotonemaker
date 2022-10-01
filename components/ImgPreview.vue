@@ -4,23 +4,23 @@
     class="rounded-[inherit]"
     not-close
     not-padding
-    @close="handleClose"
     width="auto"
+    @close="handleClose"
   >
     <div class="rounded-[inherit] relative">
       <div
-        class="h-16 bg-primary px-4 flex items-center rounded-[inherit] w-full"
+        class="h-16 bg-primary px-4 flex items-center rounded-t-[inherit] w-full"
       >
         <span> Photos by Elikem on Unsplash </span>
       </div>
-      <div class="rounded-[inherit]">
+      <div :class="`rounded-[inherit] h-[30rem]`">
         <svg
           id="duotone-img"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           :viewBox="`0 0 ${img.width} ${img.height}`"
           class="block relative rounded-b-[inherit] max-h-[28rem]"
           width="100%"
-          :height="`${img.height}`"
+          height="100%"
         >
           <filter :id="`duotone`">
             <feColorMatrix

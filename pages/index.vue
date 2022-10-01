@@ -176,26 +176,6 @@ export default Vue.extend({
       );
     },
 
-    /* applyDuotone() {
-      const { primaryColor, secondaryColor } =
-        this.getPrimaryAndSecondaryColors();
-      if (this.imgs.length) {
-        this.imgs.map((item: Photo, key) => {
-          // console.log(item);
-
-          var img = item.urls?.regular;
-          this.Duotone({
-            id: `duotone${key + 1}`,
-            src: img,
-            primaryColor,
-            secondaryColor,
-            width: item.width,
-            height: item.height,
-          });
-        });
-      }
-    }, */
-
     hexToRgb(hex: string) {
       const normal = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
       if (normal) {
@@ -209,24 +189,6 @@ export default Vue.extend({
 
       return null;
     },
-
-    /* updateDuotoneColor() {
-      const { primaryColor, secondaryColor } =
-        this.getPrimaryAndSecondaryColors();
-      if (this.imgs.length) {
-        this.imgs.map((item: Photo, key) => {
-          var canvas: any = document.getElementById(`duotone${key + 1}`);
-          canvas.width = item.width;
-        canvas.height = item.height;
-          var ctx = canvas.getContext("2d");
-          // puts the duotone image into canvas with multiply and lighten
-        ctx.globalCompositeOperation = "multiply";
-        ctx.fillStyle = primaryColor; // colour for highlights
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        })
-      }
-
-    } */
   },
 });
 </script>
