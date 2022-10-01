@@ -175,6 +175,7 @@ export default Vue.extend({
         this.hexToRgb(secondaryColor)
       );
     },
+
     /* applyDuotone() {
       const { primaryColor, secondaryColor } =
         this.getPrimaryAndSecondaryColors();

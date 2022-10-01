@@ -34,7 +34,7 @@
             width="100%"
             height="100%"
             :filter="`url(#duotone)`"
-            :href="imgSrc"
+            :xlink:href="img?.urls?.regular"
             x="0"
             y="0"
             preserveAspectRatio="xMidYMid slice"
@@ -84,23 +84,17 @@ export default {
       this.$store.commit("preview/toggle", false);
     },
     async downloadImage() {
-      const { primaryColor, secondaryColor } = getPrimaryAndSecondaryColors(
-        this.firstColor,
-        this.secondColor,
-        this.getPrimaryColor
-      );
       const base64 = await this.getBase64FromUrl(this.img?.urls?.regular);
-      console.log(base64);
-      const svg = document.getElementById("duotone-img").outerHTML;
-      console.log(svg);
-      /* this.duotone({
-        id: "download-img",
-        src: this.img?.urls?.regular,
-        primaryColor,
-        secondaryColor,
-        width: 600,
-        height: 600,
-      }); */
+      // console.log("", base64);
+      this.imgSrc = base64;
+      // this.downloadSVGAsPNG();
+      const filter = document.querySelector("#duotone").outerHTML;
+      const svg = `<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+   width="612px" height="502.174px" 
+   xml:space="preserve" viewBox="0 0 ${this.img.width} ${this.img.height}">
+   ${filter}<image width="100%" height="100%" filter="url(#duotone)" href="${base64}" x="0" y="0" preserveAspectRatio="xMidYMid slice" class="jsx-715889512"></image></svg>
+   `;
+      this.downloadSVGAsText(svg);
     },
     async getBase64FromUrl(url) {
       const data = await fetch(url);
@@ -113,6 +107,50 @@ export default {
           resolve(base64data);
         };
       });
+    },
+    downloadSVGAsText(payload) {
+      const svg = document.querySelector("svg");
+      const base64doc = btoa(unescape(encodeURIComponent(payload)));
+      const a = document.createElement("a");
+      const e = new MouseEvent("click");
+      a.download = "download.svg";
+      a.href = "data:image/svg+xml;base64," + base64doc;
+      a.dispatchEvent(e);
+    },
+    downloadSVGAsPNG(payload, height, width) {
+      const canvas = document.createElement("canvas");
+      console.log("canvas", canvas);
+      const base64doc = btoa(unescape(encodeURIComponent(payload)));
+      const w = parseInt(width);
+      const h = parseInt(height);
+      const img_to_download = document.createElement("img");
+      img_to_download.src = "data:image/svg+xml;base64," + base64doc;
+      console.log(w, h);
+      console.log("img_to_download", img_to_download);
+      img_to_download.onload = function () {
+        console.log("img loaded");
+        canvas.setAttribute("width", w);
+        canvas.setAttribute("height", h);
+        const context = canvas.getContext("2d");
+        context.clearRect(0, 0, w, h);
+        context.drawImage(img_to_download, 0, 0, w, h);
+        const dataURL = canvas.toDataURL("image/png");
+        if (window.navigator.msSaveBlob) {
+          console.log();
+          window.navigator.msSaveBlob(canvas.msToBlob(), "download.png");
+          //  e.preventDefault();
+        } else {
+          const a = document.createElement("a");
+          const my_evt = new MouseEvent("click");
+          a.download = "download.png";
+          a.href = dataURL;
+          a.dispatchEvent(my_evt);
+        }
+        canvas.parentNode.removeChild(canvas);
+      };
+      img_to_download.onerror = function (error) {
+        console.log(error);
+      };
     },
     duotone({ id, src, primaryColor, secondaryColor, width, height }) {
       // console.log("id", document.getElementById(id));
@@ -159,13 +197,6 @@ export default {
       };
       downloadedImg.src = src; // source for the image
     },
-    async init() {
-      this.imgSrc = await this.getBase64FromUrl(this.img?.urls?.regular);
-    },
-  },
-  created() {
-    this.init();
-    console.log(this.img);
   },
 };
 </script>
