@@ -1,15 +1,5 @@
 <template>
-  <div class="">
-    <!-- <div class="grid-container">
-      <div v-for="(item, index) in imgs" :key="index">
-        <div :class="` grid-item grid-item-${index + 1}`">
-          <div>
-            <img :src="item.urls.regular" />
-          </div>
-        </div>
-      </div>
-    </div> -->
-
+  <div id="main">
     <div class="grid-container">
       <div
         v-for="(item, index) in imgs"
@@ -42,30 +32,19 @@
         </svg>
       </div>
     </div>
-    <!-- <div class="grid-container">
-      <div v-for="(img, index) in imgs" :key="'canvas' + img.id">
-        <div :class="`grid-item grid-item-${index + 1}`">
-          <canvas :ref="`duotone${index + 1}`" :id="`duotone${index + 1}`" />
-        </div>
-      </div>
-    </div> -->
     <img-preview />
   </div>
 </template>
 
 <script lang="ts">
 /* tslint:disable */
+// @ts-nocheck
 
 import Vue from "vue";
 import { DuotonePayload, Photo, ColorType } from "../types/photos";
 export default Vue.extend({
   name: "IndexPage",
   layout: "MainLayout",
-  data() {
-    return {
-      imgs: [],
-    };
-  },
   computed: {
     firstColor() {
       return this.$store.state.color.selectedColorPair.firstColor;
@@ -75,6 +54,12 @@ export default Vue.extend({
     },
     getPrimaryColor() {
       return this.$store.state.color.primary;
+    },
+    imgs() {
+      return this.$store.state.app.imgs;
+    },
+    searchKey() {
+      return this.$store.state.app.searchKey;
     },
   },
   watch: {
@@ -87,32 +72,24 @@ export default Vue.extend({
     getPrimaryColor() {
       this.convertToDuotone();
     },
-
-    imgs() {
-      /* if (this.imgs.length) {
-        this.imgs.map((item: Photo, key) => {
-          console.log(item);
-
-          var img = item.urls?.regular;
-          this.Duotone({
-            id: `duotone${key + 1}`,
-            src: img,
-            primaryColor: "#f65e35",
-            secondaryColor: "#1e3265",
-            width: item.width,
-            height: item.height,
-          });
-        });
-      } */
-    },
   },
   created() {},
 
-  mounted() {
-    this.fetchPhotos();
-  },
   updated() {
     this.convertToDuotone();
+  },
+  mounted() {
+    // Detect when scrolled to bottom.
+    const main = document.querySelector("#main");
+    main.addEventListener("scroll", (e) => {
+      if (main.scrollTop + main.clientHeight >= main.scrollHeight) {
+        //this.fetchPhotos();
+        console.log("we reached");
+      }
+    });
+
+    // Initially load some items.
+    this.fetchPhotos();
   },
   methods: {
     preview(img: Photo) {
@@ -121,19 +98,7 @@ export default Vue.extend({
     },
 
     async fetchPhotos(): Promise<Photo[]> {
-      const photos = await this.$axios.$get(
-        "https://api.unsplash.com/search/photos?client_id=sW2Q_-zDlAXfQ2jn_vVstxRUvwIanRAmdJhSb1klMlI&query=fun&per_page=20"
-      );
-      this.imgs = photos?.results.map((item: any) => {
-        return {
-          id: item.id,
-          width: item.width,
-          height: item.height,
-          urls: item.urls,
-        };
-      });
-
-      return this.imgs;
+      this.$store.dispatch("app/getPhotos", { page: 1 });
     },
     getPrimaryAndSecondaryColors(): ColorType {
       let colors = [this.firstColor, this.secondColor];

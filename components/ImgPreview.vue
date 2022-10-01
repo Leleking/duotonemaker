@@ -94,8 +94,6 @@ export default {
    xml:space="preserve" viewBox="0 0 ${this.img.width} ${this.img.height}">
    ${filter}<image width="100%" height="100%" filter="url(#duotone)" href="${base64}" x="0" y="0" preserveAspectRatio="xMidYMid slice" class="jsx-715889512"></image></svg>
    `;
-      console.log("img", this.img);
-      //this.downloadSVGAsText(svg);
       this.downloadSVGAsPNG(svg, this.img.height, this.img.width);
     },
     async getBase64FromUrl(url) {
@@ -121,16 +119,12 @@ export default {
     },
     downloadSVGAsPNG(payload, height, width) {
       const canvas = document.createElement("canvas");
-      console.log("canvas", canvas);
       const base64doc = btoa(unescape(encodeURIComponent(payload)));
       const w = parseInt(width);
       const h = parseInt(height);
       const img_to_download = document.createElement("img");
       img_to_download.src = "data:image/svg+xml;base64," + base64doc;
-      console.log(w, h);
-      console.log("img_to_download", img_to_download);
       img_to_download.onload = function () {
-        console.log("img loaded");
         canvas.setAttribute("width", w);
         canvas.setAttribute("height", h);
         const context = canvas.getContext("2d");
@@ -138,7 +132,6 @@ export default {
         context.drawImage(img_to_download, 0, 0, w, h);
         const dataURL = canvas.toDataURL("image/png");
         if (window.navigator.msSaveBlob) {
-          console.log();
           window.navigator.msSaveBlob(canvas.msToBlob(), "download.png");
           //  e.preventDefault();
         } else {
@@ -155,7 +148,6 @@ export default {
       };
     },
     duotone({ id, src, primaryColor, secondaryColor, width, height }) {
-      // console.log("id", document.getElementById(id));
       const canvas = document.getElementById(id);
 
       const ctx = canvas.getContext("2d");
