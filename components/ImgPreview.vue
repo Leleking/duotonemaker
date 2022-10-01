@@ -84,17 +84,19 @@ export default {
       this.$store.commit("preview/toggle", false);
     },
     async downloadImage() {
-      const base64 = await this.getBase64FromUrl(this.img?.urls?.regular);
+      const base64 = await this.getBase64FromUrl(this.img?.urls?.full);
       // console.log("", base64);
       this.imgSrc = base64;
       // this.downloadSVGAsPNG();
       const filter = document.querySelector("#duotone").outerHTML;
       const svg = `<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-   width="612px" height="502.174px" 
+   width="${this.img.width}" height="${this.img.height}" 
    xml:space="preserve" viewBox="0 0 ${this.img.width} ${this.img.height}">
    ${filter}<image width="100%" height="100%" filter="url(#duotone)" href="${base64}" x="0" y="0" preserveAspectRatio="xMidYMid slice" class="jsx-715889512"></image></svg>
    `;
-      this.downloadSVGAsText(svg);
+      console.log("img", this.img);
+      //this.downloadSVGAsText(svg);
+      this.downloadSVGAsPNG(svg, this.img.height, this.img.width);
     },
     async getBase64FromUrl(url) {
       const data = await fetch(url);
@@ -198,6 +200,7 @@ export default {
       downloadedImg.src = src; // source for the image
     },
   },
+  created() {},
 };
 </script>
 <style lang="scss">
