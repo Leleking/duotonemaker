@@ -11,9 +11,14 @@
       <div
         class="h-16 bg-primary px-4 flex items-center rounded-t-[inherit] w-full"
       >
-        <span> Photos by Elikem on Unsplash </span>
+        <span>
+          Photos by {{ img.author }} on
+          <a :href="img.link" class="underline cursor-pointer" target="_blank"
+            >Unsplash</a
+          >
+        </span>
       </div>
-      <div :class="`rounded-[inherit] h-[30rem]`">
+      <div :class="`rounded-[inherit] w-auto h-[25rem]`">
         <svg
           id="duotone-img"
           xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -43,7 +48,13 @@
         </svg>
       </div>
       <div class="absolute bottom-5 right-5">
-        <vs-button circle icon floating @click="downloadImage">
+        <vs-button
+          :loading="loading"
+          circle
+          icon
+          floating
+          @click="downloadImage"
+        >
           <img src="../assets/images/download.svg" />
         </vs-button>
       </div>
@@ -76,6 +87,7 @@ export default {
   data() {
     return {
       imgSrc: "",
+      loading: false,
     };
   },
 
@@ -118,6 +130,7 @@ export default {
       a.dispatchEvent(e);
     },
     downloadSVGAsPNG(payload, height, width) {
+      this.loading = true;
       const canvas = document.createElement("canvas");
       const base64doc = btoa(unescape(encodeURIComponent(payload)));
       const w = parseInt(width);
@@ -146,6 +159,7 @@ export default {
       img_to_download.onerror = function (error) {
         console.log(error);
       };
+      this.loading = false;
     },
     duotone({ id, src, primaryColor, secondaryColor, width, height }) {
       const canvas = document.getElementById(id);
