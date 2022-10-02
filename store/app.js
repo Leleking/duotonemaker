@@ -8,6 +8,8 @@ export const state = () => ({
     pexels: "",
   },
   selectedAPIOption: "unsplash",
+  page: 1,
+  pageLoader: false,
 });
 
 export const mutations = {
@@ -17,16 +19,32 @@ export const mutations = {
   UPDATE_IMGS(state, newValue) {
     state.imgs = newValue;
   },
+  UPDATE_PAGE_LOADER(state, newValue) {
+    state.pageLoader = newValue;
+  },
+  UPDATE_API_PAGE(state, newValue) {
+    state.page = newValue;
+  },
 };
 
 export const actions = {
+  updatePageLoader: ({ commit }, payload) => {
+    commit("UPDATE_PAGE_LOADER", payload);
+  },
   updateSearchKey: ({ commit }, payload) => {
     commit("UPDATE_SEARCH_KEY", payload);
   },
   updateImgs: ({ commit }, payload) => {
     commit("UPDATE_IMGS", payload);
   },
-  async getPhotos({ commit, state }, { page }) {
+  updateApiPage: ({ commit }, payload) => {
+    commit("UPDATE_API_PAGE", payload);
+  },
+  async getPhotos({ commit, state }, { showPageLoader, page }) {
+    console.log("page", page);
+    if (showPageLoader) {
+      commit("UPDATE_PAGE_LOADER", true);
+    }
     const api = state.photoAPIs[state.selectedAPIOption];
     let mappedImgs;
     const photos = await axios.get(api, {
@@ -37,6 +55,7 @@ export const actions = {
         page,
       },
     });
+    console.log("phots", photos);
     if (state.selectedAPIOption === "unsplash") {
       mappedImgs = photos?.data?.results.map((item) => {
         return {
@@ -53,7 +72,8 @@ export const actions = {
       commit("UPDATE_IMGS", mappedImgs);
     }
     if (page > 1) {
-      commit("UPDATE_IMGS", [...state.imges, ...mappedImgs]);
+      commit("UPDATE_IMGS", [...state.imgs, ...mappedImgs]);
     }
+    commit("UPDATE_PAGE_LOADER", false);
   },
 };

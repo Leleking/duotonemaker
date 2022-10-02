@@ -1,6 +1,7 @@
 <template>
   <div id="main">
-    <div class="grid-container">
+    <div v-if="pageLoader">Loading...</div>
+    <div class="grid-container" v-show="!pageLoader">
       <div
         v-for="(item, index) in imgs"
         :key="index"
@@ -41,10 +42,16 @@
 // @ts-nocheck
 
 import Vue from "vue";
+import _ from "lodash";
 import { DuotonePayload, Photo, ColorType } from "../types/photos";
 export default Vue.extend({
   name: "IndexPage",
   layout: "MainLayout",
+  data() {
+    return {
+      page: 1,
+    };
+  },
   computed: {
     firstColor() {
       return this.$store.state.color.selectedColorPair.firstColor;
@@ -60,6 +67,9 @@ export default Vue.extend({
     },
     searchKey() {
       return this.$store.state.app.searchKey;
+    },
+    pageLoader() {
+      return this.$store.state.app.pageLoader;
     },
   },
   watch: {
@@ -79,17 +89,10 @@ export default Vue.extend({
     this.convertToDuotone();
   },
   mounted() {
-    // Detect when scrolled to bottom.
-    const main = document.querySelector("#main");
-    main.addEventListener("scroll", (e) => {
-      if (main.scrollTop + main.clientHeight >= main.scrollHeight) {
-        //this.fetchPhotos();
-        console.log("we reached");
-      }
-    });
+    window.addEventListener("scroll", this.handleScroll);
 
     // Initially load some items.
-    this.fetchPhotos();
+    this.$store.dispatch("app/getPhotos", { page: 1 });
   },
   methods: {
     preview(img: Photo) {
@@ -154,7 +157,22 @@ export default Vue.extend({
 
       return null;
     },
+    handleScroll() {
+      let scrollHeight = window.scrollY;
+      let maxHeight =
+        window.document.body.scrollHeight -
+        window.document.documentElement.clientHeight;
+
+      if (scrollHeight >= maxHeight - 200) {
+        this.debounceGetPhotos();
+      }
+    },
+    debounceGetPhotos: _.debounce(function () {
+      this.page = this.page + 1;
+      this.$store.dispatch("app/getPhotos", { page: this.page });
+    }, 700),
   },
+  created() {},
 });
 </script>
 <style scoped>
