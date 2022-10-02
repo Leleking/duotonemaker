@@ -5,7 +5,7 @@
       <div
         v-for="(item, index) in imgs"
         :key="index"
-        :class="`grid-item grid-item-${index + 1}`"
+        :class="`grid-item grid-item-${index + 1} bg-dark`"
         @click="preview(item)"
       >
         <svg
