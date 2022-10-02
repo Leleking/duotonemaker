@@ -19,26 +19,26 @@
             </div>
             <div class="flex space-x-2 h-full justify-center items-center">
               <div @click="openColor(1)">
-                <single-color-pair :color="getFirstColor" />
+                <!--  <single-color-pair :color="getFirstColor" /> -->
                 <input
                   id=""
                   ref="colorPicker1"
                   v-model="firstColor"
                   type="color"
                   name=""
-                  class="hidden"
+                  class="input-color"
                   @input="(e) => changeColor(e, 1)"
                 />
               </div>
               <div @click="openColor(2)">
-                <single-color-pair :color="getSecondColor" />
+                <!-- <single-color-pair :color="getSecondColor" /> -->
                 <input
                   id=""
                   ref="colorPicker2"
                   v-model="secondColor"
                   type="color"
                   name=""
-                  class="hidden"
+                  class="input-color"
                   @input="(e) => changeColor(e, 2)"
                 />
               </div>
@@ -77,6 +77,10 @@ export default {
       return this.$store.state.color.selectedColorPair.secondColor;
     },
   },
+  created() {
+    this.firstColor = this.getFirstColor;
+    this.secondColor = this.getSecondColor;
+  },
   methods: {
     isActivePair({ id }) {
       return id === this.getSelectedPairId;
@@ -111,5 +115,18 @@ export default {
 .box-shadow {
   box-shadow: 0px 8px 28px -6px rgba(24, 39, 75, 0.12),
     0px 18px 88px -4px rgba(24, 39, 75, 0.14);
+}
+
+.input-color {
+  appearance: none;
+  background: transparent;
+  border: none;
+  height: 48px;
+  width: 48px;
+  cursor: pointer;
+}
+.input-color::-webkit-color-swatch {
+  border-radius: 50%;
+  border: none;
 }
 </style>

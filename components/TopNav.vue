@@ -21,11 +21,11 @@
             class="grid grid-cols-2 divide-grey divide-x items-center w-[536px] h-full shadow-lg rounded-full px-2"
           >
             <div>
-              <vs-input v-model="search" placeholder="Search for image on" />
+              <vs-input v-model="searchKey" placeholder="Search for image on" />
             </div>
             <div class="flex items-center">
               <div>
-                <img :src="getSelectedImgOption.src" alt="">
+                <img :src="getSelectedImgOption.src" alt="" />
               </div>
               <div>
                 <vs-select v-model="selectedImgOption" placeholder="Select">
@@ -36,17 +36,15 @@
                     :value="item.id"
                   >
                     <div class="flex space-x-2">
-                      <img :src="item.src" alt="">
+                      <img :src="item.src" alt="" />
                       <span class="text-dark">{{ item.name }}</span>
                     </div>
                   </vs-option>
                 </vs-select>
               </div>
               <div>
-                <vs-button circle dark>
-                  <div class="text-white font-">
-                    Search
-                  </div>
+                <vs-button circle dark @click="searchPhotos()">
+                  <div class="text-white font-">Search</div>
                 </vs-button>
               </div>
             </div>
@@ -75,45 +73,60 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       active: 0,
-      search: '',
       selectedImgOption: 1,
       imgOptions: [
         {
           id: 1,
-          name: 'Unsplash',
-          src: require('../assets/images/unsplash.svg')
+          name: "Unsplash",
+          src: require("../assets/images/unsplash.svg"),
         },
         {
           id: 2,
-          name: 'Pexels',
-          src: require('../assets/images/pexels.svg')
-        }
-      ]
-    }
+          name: "Pexels",
+          src: require("../assets/images/pexels.svg"),
+        },
+      ],
+    };
   },
   computed: {
-    getSelectedImgOption () {
-      return this.imgOptions.find(item => item.id === this.selectedImgOption)
+    getSelectedImgOption() {
+      return this.imgOptions.find((item) => item.id === this.selectedImgOption);
     },
-    getFirstColor () {
-      return this.$store.state.color.selectedColorPair.firstColor
+    getFirstColor() {
+      return this.$store.state.color.selectedColorPair.firstColor;
     },
-    getSecondColor () {
-      return this.$store.state.color.selectedColorPair.secondColor
+    getSecondColor() {
+      return this.$store.state.color.selectedColorPair.secondColor;
     },
-    getPrimaryColor () {
-      return this.$store.state.color.primary
-    }
+    getPrimaryColor() {
+      return this.$store.state.color.primary;
+    },
+    searchKey: {
+      get() {
+        return this.$store.state.app.searchKey;
+      },
+      set(val) {
+        this.$store.dispatch("app/updateSearchKey", val);
+      },
+    },
   },
   methods: {
-    setPrimaryColor (payload) {
-      this.$store.dispatch('color/setPrimaryColor', payload)
-    }
-  }
-}
+    setPrimaryColor(payload) {
+      this.$store.dispatch("color/setPrimaryColor", payload);
+    },
+    async searchPhotos() {
+      if (this.searchKey) {
+        this.$store.dispatch("app/getPhotos", {
+          showPageLoader: true,
+          page: 1,
+        });
+      }
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>
