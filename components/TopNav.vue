@@ -43,7 +43,7 @@
                 </vs-select>
               </div>
               <div>
-                <vs-button circle dark>
+                <vs-button circle dark @click="searchPhotos()">
                   <div class="text-white font-">Search</div>
                 </vs-button>
               </div>
@@ -116,6 +116,14 @@ export default {
   methods: {
     setPrimaryColor(payload) {
       this.$store.dispatch("color/setPrimaryColor", payload);
+    },
+    async searchPhotos() {
+      if (this.searchKey) {
+        this.$store.dispatch("app/getPhotos", {
+          showPageLoader: true,
+          page: 1,
+        });
+      }
     },
   },
 };
