@@ -7,6 +7,7 @@
         :key="index"
         :class="`grid-item grid-item-${index + 1} bg-dark`"
         @click="preview(item)"
+        data-aos="fade-up"
       >
         <svg
           xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -24,7 +25,7 @@
             width="100%"
             height="100%"
             :filter="`url(#duotone)`"
-            :xlink:href="item.urls.regular"
+            :xlink:href="item.urls.small"
             x="0"
             y="0"
             preserveAspectRatio="xMidYMid slice"
@@ -33,6 +34,7 @@
         </svg>
       </div>
     </div>
+
     <img-preview />
   </div>
 </template>
@@ -44,6 +46,7 @@
 import Vue from "vue";
 import _ from "lodash";
 import { DuotonePayload, Photo, ColorType } from "../types/photos";
+import AOS from "aos";
 export default Vue.extend({
   name: "IndexPage",
   layout: "MainLayout",
@@ -83,7 +86,6 @@ export default Vue.extend({
       this.convertToDuotone();
     },
   },
-  created() {},
 
   updated() {
     this.convertToDuotone();
@@ -163,6 +165,8 @@ export default Vue.extend({
         window.document.body.scrollHeight -
         window.document.documentElement.clientHeight;
 
+      /*  console.log("scrollHeight", scrollHeight);
+      console.log("maxHeight", maxHeight); */
       if (scrollHeight >= maxHeight - 200) {
         this.debounceGetPhotos();
       }
@@ -172,7 +176,11 @@ export default Vue.extend({
       this.$store.dispatch("app/getPhotos", { page: this.page });
     }, 700),
   },
-  created() {},
+  created() {
+    if (process.client) {
+      AOS.init();
+    }
+  },
 });
 </script>
 <style scoped>
