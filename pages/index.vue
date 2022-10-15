@@ -1,21 +1,13 @@
 <template>
-  <div class="">
-    <!-- <div class="grid-container">
-      <div v-for="(item, index) in imgs" :key="index">
-        <div :class="` grid-item grid-item-${index + 1}`">
-          <div>
-            <img :src="item.urls.regular" />
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-    <div class="grid-container">
+  <div id="main">
+    <div v-if="pageLoader">Loading...</div>
+    <div class="grid-container" v-show="!pageLoader">
       <div
         v-for="(item, index) in imgs"
         :key="index"
-        :class="`grid-item grid-item-${index + 1}`"
+        :class="`grid-item grid-item-${index + 1} bg-dark`"
         @click="preview(item)"
+        data-aos="fade-up"
       >
         <svg
           xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -33,7 +25,7 @@
             width="100%"
             height="100%"
             :filter="`url(#duotone)`"
-            :xlink:href="item.urls.regular"
+            :xlink:href="item.urls.small"
             x="0"
             y="0"
             preserveAspectRatio="xMidYMid slice"
@@ -42,29 +34,25 @@
         </svg>
       </div>
     </div>
-    <!-- <div class="grid-container">
-      <div v-for="(img, index) in imgs" :key="'canvas' + img.id">
-        <div :class="`grid-item grid-item-${index + 1}`">
-          <canvas :ref="`duotone${index + 1}`" :id="`duotone${index + 1}`" />
-        </div>
-      </div>
-    </div> -->
+
     <img-preview />
-    <canvas id="hi" />
   </div>
 </template>
 
 <script lang="ts">
 /* tslint:disable */
+// @ts-nocheck
 
 import Vue from "vue";
+import _ from "lodash";
 import { DuotonePayload, Photo, ColorType } from "../types/photos";
+import AOS from "aos";
 export default Vue.extend({
   name: "IndexPage",
   layout: "MainLayout",
   data() {
     return {
-      imgs: [],
+      page: 1,
     };
   },
   computed: {
@@ -77,6 +65,15 @@ export default Vue.extend({
     getPrimaryColor() {
       return this.$store.state.color.primary;
     },
+    imgs() {
+      return this.$store.state.app.imgs;
+    },
+    searchKey() {
+      return this.$store.state.app.searchKey;
+    },
+    pageLoader() {
+      return this.$store.state.app.pageLoader;
+    },
   },
   watch: {
     firstColor() {
@@ -88,32 +85,16 @@ export default Vue.extend({
     getPrimaryColor() {
       this.convertToDuotone();
     },
-
-    imgs() {
-      /* if (this.imgs.length) {
-        this.imgs.map((item: Photo, key) => {
-          console.log(item);
-
-          var img = item.urls?.regular;
-          this.Duotone({
-            id: `duotone${key + 1}`,
-            src: img,
-            primaryColor: "#f65e35",
-            secondaryColor: "#1e3265",
-            width: item.width,
-            height: item.height,
-          });
-        });
-      } */
-    },
   },
-  created() {},
 
-  mounted() {
-    this.fetchPhotos();
-  },
   updated() {
     this.convertToDuotone();
+  },
+  mounted() {
+    window.addEventListener("scroll", this.handleScroll);
+
+    // Initially load some items.
+    this.$store.dispatch("app/getPhotos", { page: 1 });
   },
   methods: {
     preview(img: Photo) {
@@ -121,72 +102,8 @@ export default Vue.extend({
       this.$store.commit("preview/setImg", img);
     },
 
-    Duotone({
-      id,
-      src,
-      primaryColor,
-      secondaryColor,
-      width,
-      height,
-    }: DuotonePayload) {
-      // console.log("id", document.getElementById(id));
-      const canvas: any = document.getElementById(id);
-
-      const ctx = canvas.getContext("2d");
-
-      const downloadedImg: any = new Image();
-
-      downloadedImg.crossOrigin = ""; // to allow us to manipulate the image without tainting canvas
-      // console.log("canvas", width);
-      // console.log("canvas -height", height);
-      downloadedImg.onload = function () {
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(downloadedImg, 0, 0, canvas.width, canvas.height); // draws image to canvas on load
-        // Converts to grayscale by averaging the values of each pixel
-        const imageData = ctx.getImageData(0, 0, 800, 800);
-        const pixels = imageData.data;
-        for (let i = 0; i < pixels.length; i += 4) {
-          const red = pixels[i];
-          const green = pixels[i + 1];
-          const blue = pixels[i + 2];
-          // Using relative luminance to convert to grayscale
-          const avg = Math.round(
-            (0.299 * red + 0.587 * green + 0.114 * blue) * 1
-          );
-          pixels[i] = avg;
-          pixels[i + 1] = avg;
-          pixels[i + 2] = avg;
-        }
-        // Puts the grayscaled image data back into the canvas
-        ctx.putImageData(imageData, 0, 0);
-        // puts the duotone image into canvas with multiply and lighten
-        ctx.globalCompositeOperation = "multiply";
-        ctx.fillStyle = primaryColor; // colour for highlights
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // lighten
-        ctx.globalCompositeOperation = "lighten";
-        ctx.fillStyle = secondaryColor; // colour for shadows
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // calls any other draws that you want through the function parameter passed in
-        // actions(ctx);
-      };
-      downloadedImg.src = src; // source for the image
-    },
     async fetchPhotos(): Promise<Photo[]> {
-      const photos = await this.$axios.$get(
-        "https://api.unsplash.com/search/photos?client_id=sW2Q_-zDlAXfQ2jn_vVstxRUvwIanRAmdJhSb1klMlI&query=fun&per_page=20"
-      );
-      this.imgs = photos?.results.map((item: any) => {
-        return {
-          id: item.id,
-          width: item.width,
-          height: item.height,
-          urls: item.urls,
-        };
-      });
-
-      return this.imgs;
+      this.$store.dispatch("app/getPhotos", { page: 1 });
     },
     getPrimaryAndSecondaryColors(): ColorType {
       let colors = [this.firstColor, this.secondColor];
@@ -228,25 +145,6 @@ export default Vue.extend({
         this.hexToRgb(secondaryColor)
       );
     },
-    /* applyDuotone() {
-      const { primaryColor, secondaryColor } =
-        this.getPrimaryAndSecondaryColors();
-      if (this.imgs.length) {
-        this.imgs.map((item: Photo, key) => {
-          // console.log(item);
-
-          var img = item.urls?.regular;
-          this.Duotone({
-            id: `duotone${key + 1}`,
-            src: img,
-            primaryColor,
-            secondaryColor,
-            width: item.width,
-            height: item.height,
-          });
-        });
-      }
-    }, */
 
     hexToRgb(hex: string) {
       const normal = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
@@ -261,24 +159,27 @@ export default Vue.extend({
 
       return null;
     },
+    handleScroll() {
+      let scrollHeight = window.scrollY;
+      let maxHeight =
+        window.document.body.scrollHeight -
+        window.document.documentElement.clientHeight;
 
-    /* updateDuotoneColor() {
-      const { primaryColor, secondaryColor } =
-        this.getPrimaryAndSecondaryColors();
-      if (this.imgs.length) {
-        this.imgs.map((item: Photo, key) => {
-          var canvas: any = document.getElementById(`duotone${key + 1}`);
-          canvas.width = item.width;
-        canvas.height = item.height;
-          var ctx = canvas.getContext("2d");
-          // puts the duotone image into canvas with multiply and lighten
-        ctx.globalCompositeOperation = "multiply";
-        ctx.fillStyle = primaryColor; // colour for highlights
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        })
+      /*  console.log("scrollHeight", scrollHeight);
+      console.log("maxHeight", maxHeight); */
+      if (scrollHeight >= maxHeight - 200) {
+        this.debounceGetPhotos();
       }
-
-    } */
+    },
+    debounceGetPhotos: _.debounce(function () {
+      this.page = this.page + 1;
+      this.$store.dispatch("app/getPhotos", { page: this.page });
+    }, 700),
+  },
+  created() {
+    if (process.client) {
+      AOS.init();
+    }
   },
 });
 </script>

@@ -10,11 +10,9 @@ export default {
     color: {
       type: String,
       default: () => {
-        return ''
-      }
-    }
-  }
-}
+        return "";
+      },
+    },
+  },
+};
 </script>
-
-<style lang="scss" scoped></style>
