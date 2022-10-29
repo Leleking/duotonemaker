@@ -55,7 +55,9 @@
           floating
           @click="downloadImage"
         >
-          <img src="../assets/images/download.svg" />
+          <span>
+            <img src="../assets/images/download.svg" />
+          </span>
         </vs-button>
       </div>
     </div>
@@ -63,9 +65,12 @@
 </template>
 
 <script>
-import { getPrimaryAndSecondaryColors } from "../utils/duotone.js";
 export default {
   computed: {
+    btnBgColor() {
+      if (this.loading) return "rgb(255,255,255)";
+      return "rgb(0,0,0)";
+    },
     show() {
       return this.$store.state.preview.show;
     },
@@ -96,17 +101,22 @@ export default {
       this.$store.commit("preview/toggle", false);
     },
     async downloadImage() {
+      //this.loading = true;
+      const loading = this.$vs.loading({
+        background: "#000",
+        color: "#fff",
+      });
       const base64 = await this.getBase64FromUrl(this.img?.urls?.full);
       // console.log("", base64);
       this.imgSrc = base64;
       // this.downloadSVGAsPNG();
       const filter = document.querySelector("#duotone").outerHTML;
       const svg = `<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-   width="${this.img.width}" height="${this.img.height}" 
+   width="${this.img.width}" height="${this.img.height}"
    xml:space="preserve" viewBox="0 0 ${this.img.width} ${this.img.height}">
    ${filter}<image width="100%" height="100%" filter="url(#duotone)" href="${base64}" x="0" y="0" preserveAspectRatio="xMidYMid slice" class="jsx-715889512"></image></svg>
    `;
-      this.downloadSVGAsPNG(svg, this.img.height, this.img.width);
+      this.downloadSVGAsPNG(svg, this.img.height, this.img.width, loading);
     },
     async getBase64FromUrl(url) {
       const data = await fetch(url);
@@ -129,14 +139,14 @@ export default {
       a.href = "data:image/svg+xml;base64," + base64doc;
       a.dispatchEvent(e);
     },
-    downloadSVGAsPNG(payload, height, width) {
-      this.loading = true;
+    downloadSVGAsPNG(payload, height, width, loading) {
       const canvas = document.createElement("canvas");
       const base64doc = btoa(unescape(encodeURIComponent(payload)));
       const w = parseInt(width);
       const h = parseInt(height);
       const img_to_download = document.createElement("img");
       img_to_download.src = "data:image/svg+xml;base64," + base64doc;
+
       img_to_download.onload = function () {
         canvas.setAttribute("width", w);
         canvas.setAttribute("height", h);
@@ -144,9 +154,10 @@ export default {
         context.clearRect(0, 0, w, h);
         context.drawImage(img_to_download, 0, 0, w, h);
         const dataURL = canvas.toDataURL("image/png");
+        loading.close();
         if (window.navigator.msSaveBlob) {
           window.navigator.msSaveBlob(canvas.msToBlob(), "download.png");
-          //  e.preventDefault();
+          this.loading = false;
         } else {
           const a = document.createElement("a");
           const my_evt = new MouseEvent("click");
@@ -154,13 +165,13 @@ export default {
           a.href = dataURL;
           a.dispatchEvent(my_evt);
         }
-        canvas.parentNode.removeChild(canvas);
+        canvas?.parentNode?.removeChild(canvas);
       };
       img_to_download.onerror = function (error) {
         console.log(error);
       };
-      this.loading = false;
     },
+    //this.
     duotone({ id, src, primaryColor, secondaryColor, width, height }) {
       const canvas = document.getElementById(id);
 
@@ -206,7 +217,6 @@ export default {
       downloadedImg.src = src; // source for the image
     },
   },
-  created() {},
 };
 </script>
 <style lang="scss">

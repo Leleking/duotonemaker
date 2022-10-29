@@ -2,7 +2,9 @@
   <div class="fixed bottom-7 w-full z-10">
     <div class="w-full flex justify-center">
       <div class="">
-        <div class="bg-defaultBg w-[569px] rounded-full flex item box-shadow">
+        <div
+          class="bg-defaultBg w-1/2 sm:w-[569px] rounded-full flex item box-shadow"
+        >
           <div class="py-3 px-5 flex justify-between w-full">
             <div class="flex space-x-2 h-full justify-center items-center">
               <div

@@ -1,38 +1,41 @@
 <template>
   <div id="main">
     <div v-if="pageLoader">Loading...</div>
-    <div class="grid-container" v-show="!pageLoader">
-      <div
-        v-for="(item, index) in imgs"
-        :key="index"
-        :class="`grid-item grid-item-${index + 1} bg-dark`"
-        @click="preview(item)"
-        data-aos="fade-up"
-      >
-        <svg
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          :viewBox="`0 0 ${item.width} ${item.height}`"
+    <div class="px-3 md:px-0">
+      <masonry :cols="{ default: 4, 1000: 3, 700: 2, 400: 1 }" :gutter="10">
+        <div
+          v-for="(item, index) in imgs"
+          :key="index"
+          :class="` grid-item-${index + 1} mb-2 rounded-[10px]`"
+          @click="preview(item)"
         >
-          <filter :id="`duotone`">
-            <feColorMatrix
-              type="matrix"
-              values="0.67578125 0 0 0 0.28515625 0.73828125 0 0 0 0.0625 0.72265625 0 0 0 0.15625 0 0 0 1 0"
-              color-interpolation-filters="sRGB"
-              class="jsx-715889512"
-            />
-          </filter>
-          <image
-            width="100%"
-            height="100%"
-            :filter="`url(#duotone)`"
-            :xlink:href="item.urls.small"
-            x="0"
-            y="0"
-            preserveAspectRatio="xMidYMid slice"
-            class="jsx-715889512"
-          />
-        </svg>
-      </div>
+          <div data-aos="fade-up">
+            <svg
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              :viewBox="`0 0 ${item.width} ${item.height}`"
+            >
+              <filter :id="`duotone`">
+                <feColorMatrix
+                  type="matrix"
+                  values="0.67578125 0 0 0 0.28515625 0.73828125 0 0 0 0.0625 0.72265625 0 0 0 0.15625 0 0 0 1 0"
+                  color-interpolation-filters="sRGB"
+                  class="jsx-715889512"
+                />
+              </filter>
+              <image
+                width="100%"
+                height="100%"
+                :filter="`url(#duotone)`"
+                :xlink:href="item.urls.small"
+                x="0"
+                y="0"
+                preserveAspectRatio="xMidYMid slice"
+                class="jsx-715889512"
+              />
+            </svg>
+          </div>
+        </div>
+      </masonry>
     </div>
 
     <img-preview />
@@ -45,8 +48,9 @@
 
 import Vue from "vue";
 import _ from "lodash";
-import { DuotonePayload, Photo, ColorType } from "../types/photos";
+import { Photo, ColorType } from "../types/photos";
 import AOS from "aos";
+import "aos/dist/aos.css";
 export default Vue.extend({
   name: "IndexPage",
   layout: "MainLayout",
@@ -91,8 +95,19 @@ export default Vue.extend({
     this.convertToDuotone();
   },
   mounted() {
+    if (process.client) {
+      AOS.init({
+        offset: 0,
+        delay: 0,
+        once: true,
+        mirror: true,
+        anchorPlacement: "top-bottom",
+      });
+    }
+    window.addEventListener("resize", () => {
+      this.convertToDuotone();
+    });
     window.addEventListener("scroll", this.handleScroll);
-
     // Initially load some items.
     this.$store.dispatch("app/getPhotos", { page: 1 });
   },
@@ -176,57 +191,11 @@ export default Vue.extend({
       this.$store.dispatch("app/getPhotos", { page: this.page });
     }, 700),
   },
-  created() {
-    if (process.client) {
-      AOS.init();
-    }
-  },
+  created() {},
 });
 </script>
 <style scoped>
-.duotone {
-  position: relative;
-  margin: 0 auto;
-}
-
-.duotone::before,
-.duotone::after {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.duotone img {
-  display: hidden;
-}
-
-.duotone::after {
-  background: #f6cde1;
-  content: "";
-  display: block;
-  width: 100%;
-  height: 100%;
-  mix-blend-mode: darken;
-  z-index: 1;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.duotone::before {
-  background: #562f40;
-  content: "";
-  display: block;
-  width: 100%;
-  height: 100%;
-  mix-blend-mode: lighten;
-  z-index: 1;
-  position: absolute;
-  top: 0;
-  left: 0;
+svg {
+  border-radius: 10px;
 }
 </style>
