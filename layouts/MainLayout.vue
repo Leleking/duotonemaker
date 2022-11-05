@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full overflow-y-scroll bg-defaultBg relative" id="main">
+  <div class="h-full bg-defaultBg relative" id="main">
     <div class="container mx-auto">
       <top-nav />
       <div>
