@@ -21,7 +21,12 @@
             class="flex justify-between divide-grey divide-x items-center w-full md:w-[536px] h-full shadow-lg rounded-full px-2"
           >
             <div>
-              <vs-input v-model="searchKey" placeholder="Search for image on" />
+              <!--  <vs-input v-model="searchKey" placeholder="Search for image on" /> -->
+              <input
+                v-model="searchKey"
+                placeholder="Search for image on"
+                class="pl-3"
+              />
             </div>
             <div class="flex items-center">
               <div>
