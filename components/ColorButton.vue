@@ -2,7 +2,7 @@
   <div>
     <div
       :style="{ background: color }"
-      class="flex justify-center items-center h-[30px] w-[30px] rounded-full"
+      class="flex justify-center items-center h-[22px] w-[22px] md:h-[30px] md:w-[30px] rounded-full"
     >
       <div v-if="primary" class="bg-white h-[10px] w-[10px] rounded-full" />
     </div>
@@ -15,20 +15,20 @@ export default {
     color: {
       type: String,
       default: () => {
-        return 'rgb(235, 37, 90)'
-      }
+        return "rgb(235, 37, 90)";
+      },
     },
     primary: {
       type: Boolean,
       default: () => {
-        return false
-      }
-    }
+        return false;
+      },
+    },
   },
-  data () {
-    return {}
-  }
-}
+  data() {
+    return {};
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>
