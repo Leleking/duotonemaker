@@ -115,6 +115,7 @@ export default Vue.extend({
     preview(img: Photo) {
       this.$store.commit("preview/toggle", true);
       this.$store.commit("preview/setImg", img);
+      this.convertToDuotone();
     },
 
     async fetchPhotos(): Promise<Photo[]> {
