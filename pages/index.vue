@@ -126,7 +126,7 @@ export default Vue.extend({
       return { primaryColor: this.getPrimaryColor, secondaryColor: colors[0] };
     },
     getMatrixValues(color1: any, color2: any) {
-      const matrix: any = document.querySelector("feColorMatrix");
+      const matrix: any = document.querySelectorAll("feColorMatrix");
       let value: any = [];
       value = value.concat([
         color1[0] / 256 - color2[0] / 256,
@@ -150,7 +150,9 @@ export default Vue.extend({
         color2[2] / 256,
       ]);
       value = value.concat([0, 0, 0, 1, 0]);
-      matrix.setAttribute("values", value.join(" "));
+      matrix.forEach((m) => {
+        m.setAttribute("values", value.join(" "));
+      });
     },
     convertToDuotone() {
       if (this.imgs.length) {
