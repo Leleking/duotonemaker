@@ -17,7 +17,7 @@
               <filter :id="`duotone`">
                 <feColorMatrix
                   type="matrix"
-                  values="0.67578125 0 0 0 0.28515625 0.73828125 0 0 0 0.0625 0.72265625 0 0 0 0.15625 0 0 0 1 0"
+                  values=""
                   color-interpolation-filters="sRGB"
                   class="jsx-715889512"
                 />
@@ -153,12 +153,14 @@ export default Vue.extend({
       matrix.setAttribute("values", value.join(" "));
     },
     convertToDuotone() {
-      const { primaryColor, secondaryColor }: ColorType =
-        this.getPrimaryAndSecondaryColors();
-      this.getMatrixValues(
-        this.hexToRgb(primaryColor),
-        this.hexToRgb(secondaryColor)
-      );
+      if (this.imgs.length) {
+        const { primaryColor, secondaryColor }: ColorType =
+          this.getPrimaryAndSecondaryColors();
+        this.getMatrixValues(
+          this.hexToRgb(primaryColor),
+          this.hexToRgb(secondaryColor)
+        );
+      }
     },
 
     hexToRgb(hex: string) {
