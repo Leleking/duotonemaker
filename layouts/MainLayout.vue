@@ -1,6 +1,6 @@
 <template>
-  <div class="h-full overflow-y-scroll bg-defaultBg relative" id="main">
-    <div class="container mx-auto">
+  <div class="h-full bg-defaultBg relative" id="main">
+    <div class="md:container md:mx-auto">
       <top-nav />
       <div>
         <Nuxt />

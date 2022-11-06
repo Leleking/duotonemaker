@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <div class="py-[30px]">
-      <div class="flex justify-between">
+  <div class="">
+    <div class="py-[30px] px-3 md:px-0">
+      <div class="flex justify-between items-center space-x-2">
         <div class="flex items-center space-x-1">
           <div @click="setPrimaryColor(getFirstColor)">
             <color-button
@@ -18,7 +18,7 @@
         </div>
         <div class="flex">
           <div
-            class="grid grid-cols-2 divide-grey divide-x items-center w-[536px] h-full shadow-lg rounded-full px-2"
+            class="flex justify-between divide-grey divide-x items-center w-full md:w-[536px] h-full shadow-lg rounded-full px-2"
           >
             <div>
               <vs-input v-model="searchKey" placeholder="Search for image on" />
@@ -27,7 +27,7 @@
               <div>
                 <img :src="getSelectedImgOption.src" alt="" />
               </div>
-              <div>
+              <div class="hidden md:block">
                 <vs-select v-model="selectedImgOption" placeholder="Select">
                   <vs-option
                     v-for="item in imgOptions"
@@ -43,22 +43,51 @@
                 </vs-select>
               </div>
               <div>
-                <vs-button circle dark @click="searchPhotos()">
-                  <div class="text-white font-">Search</div>
-                </vs-button>
+                <div class="hidden md:block">
+                  <vs-button circle dark @click="searchPhotos()">
+                    <div class="text-white font-">Search</div>
+                  </vs-button>
+                </div>
+                <div class="block md:hidden">
+                  <vs-button
+                    icon
+                    circle
+                    danger
+                    class="w-[32px] h-[32px]"
+                    @click="searchPhotos()"
+                  >
+                    <span>
+                      <img height="24px" src="../assets/images/search.svg" />
+                    </span>
+                  </vs-button>
+                </div>
               </div>
             </div>
           </div>
-          <div>
-            <vs-button circle danger>
+          <div class="hidden lg:block">
+            <vs-button circle danger class="block">
               <div class="text-white font-[16px] flex items-center space-x-1">
                 <i class="bx bx-upload text-white" style="font-size: 16px" />
-                <span> Upload image</span>
+                <span> Upload Image</span>
               </div>
             </vs-button>
           </div>
         </div>
-        <div>
+        <div class="block lg:hidden items-center justify-center">
+          <vs-button
+            circle
+            floating
+            active
+            shadow
+            icon
+            class="w-[40px] h-[40px] shadow-lg rounded-full"
+          >
+            <span>
+              <img height="24px" src="../assets/images/img.svg" />
+            </span>
+          </vs-button>
+        </div>
+        <div class="hidden lg:block">
           <vs-button circle primary>
             <div class="text-dark font-[16px] flex items-center space-x-1">
               <span> Spread the</span>

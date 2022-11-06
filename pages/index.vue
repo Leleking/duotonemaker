@@ -99,7 +99,7 @@ export default Vue.extend({
       AOS.init({
         offset: 0,
         delay: 0,
-        once: true,
+        once: false,
         mirror: true,
         anchorPlacement: "top-bottom",
       });
