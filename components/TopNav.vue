@@ -57,7 +57,7 @@
                     @click="searchPhotos()"
                   >
                     <span>
-                      <img height="24px" src="../assets/images/search.svg" />
+                      <img height="24px" src="../assets/images/Search.svg" />
                     </span>
                   </vs-button>
                 </div>
