@@ -17,8 +17,9 @@
           </div>
         </div>
         <div class="flex">
-          <div
+          <form
             class="flex justify-between divide-grey divide-x items-center w-full md:w-[536px] h-full shadow-lg rounded-full px-2"
+            @submit.prevent="searchPhotos"
           >
             <div>
               <!--  <vs-input v-model="searchKey" placeholder="Search for image on" /> -->
@@ -68,14 +69,31 @@
                 </div>
               </div>
             </div>
-          </div>
+          </form>
           <div class="hidden lg:block">
-            <vs-button circle danger class="block">
-              <div class="text-white font-[16px] flex items-center space-x-1">
-                <i class="bx bx-upload text-white" style="font-size: 16px" />
-                <span> Upload Image</span>
-              </div>
-            </vs-button>
+            <div class="text-white font-[16px]">
+              <input
+                type="file"
+                accept="image/*"
+                name="custom_img"
+                id="custom_img"
+                style="display: none"
+                @change="onChangeImg"
+                ref="custom_img"
+              />
+
+              <vs-button
+                @click="$refs.custom_img.click()"
+                circle
+                danger
+                class="block"
+              >
+                <div class="flex items-center justify-center space-x-1">
+                  <i class="bx bx-upload text-white" style="font-size: 16px" />
+                  <span> Upload Image</span>
+                </div>
+              </vs-button>
+            </div>
           </div>
         </div>
         <div class="block lg:hidden items-center justify-center">
@@ -151,7 +169,29 @@ export default {
     setPrimaryColor(payload) {
       this.$store.dispatch("color/setPrimaryColor", payload);
     },
+
+    async onChangeImg(e) {
+      let img = new Image();
+      const file = e.target.files[0];
+      img.src = URL.createObjectURL(file);
+      await img.decode();
+      console.log(`width: ${img.width}, height: ${img.height}`);
+      this.$store.commit("preview/toggle", true);
+      this.$store.commit("preview/setImg", {
+        id: "",
+        name: file.name,
+        urls: {
+          raw: img.src,
+          regular: img.src,
+        },
+        width: img.width,
+        height: img.height,
+        custom: true,
+        file,
+      });
+    },
     async searchPhotos() {
+      //e.preventDefault();
       if (this.searchKey) {
         this.$store.dispatch("app/getPhotos", {
           showPageLoader: true,
