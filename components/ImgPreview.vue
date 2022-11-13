@@ -11,12 +11,13 @@
       <div
         class="h-16 bg-primary px-4 flex items-center rounded-t-[inherit] w-full"
       >
-        <span>
+        <span v-if="!img.custom">
           Photos by {{ img.author }} on
           <a :href="img.link" class="underline cursor-pointer" target="_blank"
             >Unsplash</a
           >
         </span>
+        <span v-if="img.custom">Custom Image</span>
       </div>
       <div :class="`rounded-[inherit] w-auto h-[25rem]`">
         <svg
@@ -119,16 +120,28 @@ export default {
       this.downloadSVGAsPNG(svg, this.img.height, this.img.width, loading);
     },
     async getBase64FromUrl(url) {
-      const data = await fetch(url);
-      const blob = await data.blob();
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-          const base64data = reader.result;
-          resolve(base64data);
-        };
-      });
+      if (!this.img.custom) {
+        const data = await fetch(url);
+        const blob = await data.blob();
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(blob);
+          reader.onloadend = () => {
+            const base64data = reader.result;
+            resolve(base64data);
+          };
+        });
+      }
+      if (this.img.custom) {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(this.img.file);
+          reader.onloadend = () => {
+            const base64data = reader.result;
+            resolve(base64data);
+          };
+        });
+      }
     },
     downloadSVGAsText(payload) {
       const svg = document.querySelector("svg");
