@@ -34,7 +34,11 @@
                 <img :src="getSelectedImgOption.src" alt="" />
               </div>
               <div class="hidden md:block">
-                <vs-select v-model="selectedImgOption" placeholder="Select">
+                <vs-select
+                  v-model="selectedImgOption"
+                  @change="checkAPI"
+                  placeholder="Select"
+                >
                   <vs-option
                     v-for="item in imgOptions"
                     :key="item.id"
@@ -134,11 +138,13 @@ export default {
           id: 1,
           name: "Unsplash",
           src: require("../assets/images/unsplash.svg"),
+          disabled: false,
         },
         {
           id: 2,
           name: "Pexels",
           src: require("../assets/images/pexels.svg"),
+          disabled: true,
         },
       ],
     };
@@ -166,6 +172,19 @@ export default {
     },
   },
   methods: {
+    checkAPI(e) {
+      const imgAPI = this.imgOptions.find((item) => item.id === e);
+      if (imgAPI.disabled) {
+        this.selectedImgOption = 1;
+        this.$vs.notification({
+          color: "#1E1E1E",
+          position: "top-right",
+          title: imgAPI.name,
+          text: `The ${imgAPI.name} API is currently unavailable`,
+        });
+        console.log("img", e);
+      }
+    },
     setPrimaryColor(payload) {
       this.$store.dispatch("color/setPrimaryColor", payload);
     },
