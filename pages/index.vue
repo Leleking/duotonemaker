@@ -19,7 +19,6 @@
                   type="matrix"
                   values=""
                   color-interpolation-filters="sRGB"
-                  class="jsx-715889512"
                 />
               </filter>
               <image
@@ -30,7 +29,6 @@
                 x="0"
                 y="0"
                 preserveAspectRatio="xMidYMid slice"
-                class="jsx-715889512"
               />
             </svg>
           </div>
@@ -51,6 +49,7 @@ import _ from "lodash";
 import { Photo, ColorType } from "../types/photos";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { duotoneImage } from "../utils/duotone";
 export default Vue.extend({
   name: "IndexPage",
   layout: "MainLayout",
@@ -113,80 +112,30 @@ export default Vue.extend({
   },
   methods: {
     preview(img: Photo) {
+      this.convertToDuotone();
       this.$store.commit("preview/toggle", true);
       this.$store.commit("preview/setImg", img);
-      this.convertToDuotone();
     },
 
     async fetchPhotos(): Promise<Photo[]> {
       this.$store.dispatch("app/getPhotos", { page: 1 });
     },
-    getPrimaryAndSecondaryColors(): ColorType {
-      let colors = [this.firstColor, this.secondColor];
-      colors = colors.filter((color) => color !== this.getPrimaryColor);
-      return { primaryColor: this.getPrimaryColor, secondaryColor: colors[0] };
-    },
-    getMatrixValues(color1: any, color2: any) {
-      const matrix: any = document.querySelectorAll("feColorMatrix");
-      let value: any = [];
-      value = value.concat([
-        color1[0] / 256 - color2[0] / 256,
-        0,
-        0,
-        0,
-        color2[0] / 256,
-      ]);
-      value = value.concat([
-        color1[1] / 256 - color2[1] / 256,
-        0,
-        0,
-        0,
-        color2[1] / 256,
-      ]);
-      value = value.concat([
-        color1[2] / 256 - color2[2] / 256,
-        0,
-        0,
-        0,
-        color2[2] / 256,
-      ]);
-      value = value.concat([0, 0, 0, 1, 0]);
-      matrix.forEach((m) => {
-        m.setAttribute("values", value.join(" "));
-      });
-    },
+
     convertToDuotone() {
       if (this.imgs.length) {
-        const { primaryColor, secondaryColor }: ColorType =
-          this.getPrimaryAndSecondaryColors();
-        this.getMatrixValues(
-          this.hexToRgb(primaryColor),
-          this.hexToRgb(secondaryColor)
-        );
+        duotoneImage({
+          firstColor: this.firstColor,
+          secondColor: this.secondColor,
+          primaryColor: this.getPrimaryColor,
+        });
       }
     },
 
-    hexToRgb(hex: string) {
-      const normal = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-      if (normal) {
-        return normal.slice(1).map((e) => parseInt(e, 16));
-      }
-
-      const shorthand = hex.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
-      if (shorthand) {
-        return shorthand.slice(1).map((e) => 0x11 * parseInt(e, 16));
-      }
-
-      return null;
-    },
     handleScroll() {
       let scrollHeight = window.scrollY;
       let maxHeight =
         window.document.body.scrollHeight -
         window.document.documentElement.clientHeight;
-
-      /*  console.log("scrollHeight", scrollHeight);
-      console.log("maxHeight", maxHeight); */
       if (scrollHeight >= maxHeight - 200) {
         this.debounceGetPhotos();
       }
