@@ -7,7 +7,7 @@
     width="auto"
     @close="handleClose"
   >
-    <div class="rounded-[inherit] relative">
+    <div v-if="show" class="rounded-[inherit] relative">
       <div
         class="h-16 bg-primary px-4 flex items-center rounded-t-[inherit] w-full"
       >
@@ -19,12 +19,12 @@
         </span>
         <span v-if="img.custom">Custom Image</span>
       </div>
-      <div :class="`rounded-[inherit] w-auto h-[25rem]`">
+      <div class="rounded-[inherit] w-auto h-[25rem]">
         <svg
           id="duotone-img"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           :viewBox="`0 0 ${img.width} ${img.height}`"
-          class="block relative rounded-b-[inherit] max-h-[28rem]"
+          class="block relative rounded-b-[inherit] h-full w-full"
           width="100%"
           height="100%"
         >
@@ -33,7 +33,6 @@
               type="matrix"
               values="0.67578125 0 0 0 0.28515625 0.73828125 0 0 0 0.0625 0.72265625 0 0 0 0.15625 0 0 0 1 0"
               color-interpolation-filters="sRGB"
-              class="jsx-715889512"
             />
           </filter>
           <image
@@ -44,7 +43,6 @@
             x="0"
             y="0"
             preserveAspectRatio="xMidYMid slice"
-            class="jsx-715889512"
           />
         </svg>
       </div>
@@ -66,17 +64,30 @@
 </template>
 
 <script>
+import { duotoneImage } from "~/utils/duotone";
 export default {
+  created() {},
   computed: {
     btnBgColor() {
       if (this.loading) return "rgb(255,255,255)";
       return "rgb(0,0,0)";
     },
-    show() {
-      return this.$store.state.preview.show;
+    show: {
+      get() {
+        return this.$store.state.preview.show;
+      },
+      set(val) {
+        this.$store.commit("preview/toggle", val);
+      },
     },
 
     img() {
+      setInterval(() => {
+        this.convertToDuotone();
+      }, 50);
+      if (this.$store.state.preview.img) {
+        this.convertToDuotone();
+      }
       return this.$store.state.preview.img;
     },
     firstColor() {
@@ -101,21 +112,27 @@ export default {
     handleClose() {
       this.$store.commit("preview/toggle", false);
     },
+    convertToDuotone() {
+      if (process.client) {
+        duotoneImage({
+          firstColor: this.firstColor,
+          secondColor: this.secondColor,
+          primaryColor: this.getPrimaryColor,
+        });
+      }
+    },
     async downloadImage() {
-      //this.loading = true;
       const loading = this.$vs.loading({
         background: "#000",
         color: "#fff",
       });
       const base64 = await this.getBase64FromUrl(this.img?.urls?.full);
-      // console.log("", base64);
       this.imgSrc = base64;
-      // this.downloadSVGAsPNG();
       const filter = document.querySelector("#duotone").outerHTML;
       const svg = `<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
    width="${this.img.width}" height="${this.img.height}"
    xml:space="preserve" viewBox="0 0 ${this.img.width} ${this.img.height}">
-   ${filter}<image width="100%" height="100%" filter="url(#duotone)" href="${base64}" x="0" y="0" preserveAspectRatio="xMidYMid slice" class="jsx-715889512"></image></svg>
+   ${filter}<image width="100%" height="100%" filter="url(#duotone)" href="${base64}" x="0" y="0" preserveAspectRatio="xMidYMid slice" ></image></svg>
    `;
       this.downloadSVGAsPNG(svg, this.img.height, this.img.width, loading);
     },
@@ -183,51 +200,6 @@ export default {
       img_to_download.onerror = function (error) {
         console.log(error);
       };
-    },
-    //this.
-    duotone({ id, src, primaryColor, secondaryColor, width, height }) {
-      const canvas = document.getElementById(id);
-
-      const ctx = canvas.getContext("2d");
-
-      const downloadedImg = new Image();
-
-      downloadedImg.crossOrigin = ""; // to allow us to manipulate the image without tainting canvas
-      // console.log("canvas", width);
-      // console.log("canvas -height", height);
-      downloadedImg.onload = function () {
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(downloadedImg, 0, 0, canvas.width, canvas.height); // draws image to canvas on load
-        // Converts to grayscale by averaging the values of each pixel
-        const imageData = ctx.getImageData(0, 0, 800, 800);
-        const pixels = imageData.data;
-        for (let i = 0; i < pixels.length; i += 4) {
-          const red = pixels[i];
-          const green = pixels[i + 1];
-          const blue = pixels[i + 2];
-          // Using relative luminance to convert to grayscale
-          const avg = Math.round(
-            (0.299 * red + 0.587 * green + 0.114 * blue) * 1
-          );
-          pixels[i] = avg;
-          pixels[i + 1] = avg;
-          pixels[i + 2] = avg;
-        }
-        // Puts the grayscaled image data back into the canvas
-        ctx.putImageData(imageData, 0, 0);
-        // puts the duotone image into canvas with multiply and lighten
-        ctx.globalCompositeOperation = "multiply";
-        ctx.fillStyle = primaryColor; // colour for highlights
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // lighten
-        ctx.globalCompositeOperation = "lighten";
-        ctx.fillStyle = secondaryColor; // colour for shadows
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // calls any other draws that you want through the function parameter passed in
-        // actions(ctx);
-      };
-      downloadedImg.src = src; // source for the image
     },
   },
 };
