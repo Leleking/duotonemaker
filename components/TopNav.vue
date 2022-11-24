@@ -21,16 +21,16 @@
             class="flex justify-between divide-grey divide-x items-center w-full md:w-[536px] h-full shadow-lg rounded-full px-2"
             @submit.prevent="searchPhotos"
           >
-            <div>
+            <div class="w-auto">
               <!--  <vs-input v-model="searchKey" placeholder="Search for image on" /> -->
               <input
                 v-model="searchKey"
                 placeholder="Search for image on"
-                class="pl-3"
+                class="pl-3 w-full"
               />
             </div>
             <div class="flex items-center">
-              <div>
+              <div class="hidden md:black">
                 <img :src="getSelectedImgOption.src" alt="" />
               </div>
               <div class="hidden md:block">
