@@ -23,7 +23,7 @@
               <image
                 width="100%"
                 height="100%"
-                :filter="`url(#duotone)`"
+                filter="url(#duotone)"
                 :xlink:href="item.urls.small"
                 x="0"
                 y="0"
