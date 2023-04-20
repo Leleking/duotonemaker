@@ -49,7 +49,8 @@ export const actions = {
     let mappedImgs;
     const photos = await axios.get(api, {
       params: {
-        client_id: process.env.UNSPLASH_CLIENT_ID,
+        //client_id: process.env.UNSPLASH_CLIENT_ID,
+        client_id: "sW2Q_-zDlAXfQ2jn_vVstxRUvwIanRAmdJhSb1klMlI",
         per_page: 40,
         query: state.searchKey ? state.searchKey : "random",
         page,
