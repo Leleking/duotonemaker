@@ -1,4 +1,8 @@
-# duotone
+# DuotoneMaker
+
+![duotonemaker](https://user-images.githubusercontent.com/23501023/233493914-a7c025c7-c5bc-4a57-9444-070b47b80b95.png)
+
+A free online too for duotoning images with two colors from unsplash or from pexels or from uploading your own image
 
 ## Build Setup
 
@@ -40,7 +44,6 @@ More information about the usage of this directory in [the documentation](https:
 Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
 
 More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
-
 
 ### `pages`
 
