@@ -1,6 +1,5 @@
 <template>
   <div id="main">
-    <div v-if="pageLoader">Loading...</div>
     <div class="px-3 md:px-0">
       <masonry :cols="{ default: 4, 1000: 3, 700: 2, 400: 1 }" :gutter="10">
         <div
