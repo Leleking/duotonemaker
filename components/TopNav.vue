@@ -54,7 +54,12 @@
               </div>
               <div>
                 <div class="hidden md:block">
-                  <vs-button circle dark @click="searchPhotos()">
+                  <vs-button
+                    :loading="pageLoader"
+                    circle
+                    dark
+                    @click="searchPhotos()"
+                  >
                     <div class="text-white font-">Search</div>
                   </vs-button>
                 </div>
@@ -161,6 +166,9 @@ export default {
     },
     getPrimaryColor() {
       return this.$store.state.color.primary;
+    },
+    pageLoader() {
+      return this.$store.state.app.pageLoader;
     },
     searchKey: {
       get() {
