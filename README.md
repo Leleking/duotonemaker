@@ -2,7 +2,7 @@
 
 ![duotonemaker](https://user-images.githubusercontent.com/23501023/233493914-a7c025c7-c5bc-4a57-9444-070b47b80b95.png)
 
-A free online too for duotoning images with two colors from unsplash or from pexels or from uploading your own image
+A free online tool for duotoning images with two colors from unsplash or from pexels or from uploading your own image
 
 ## Build Setup
 
